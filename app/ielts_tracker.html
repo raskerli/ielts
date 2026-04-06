@@ -5,1589 +5,1083 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IELTS Band 8 — Study Platform</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --bg: #0a0c12;
-    --bg2: #111420;
-    --bg3: #181d2e;
-    --card: #1c2235;
-    --card2: #222840;
-    --border: #2d3554;
-    --accent: #5b7fff;
-    --accent2: #7c5fff;
-    --gold: #f0c040;
-    --green: #3ecf8e;
-    --red: #ff5a5a;
-    --text: #e8eaf6;
-    --muted: #7b84a8;
-    --listen: #3ecf8e;
-    --read: #5b7fff;
-    --write: #f0c040;
-    --speak: #ff7c5f;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--accent), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-  }
-
-  .header-date {
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
-
-  .band-badge {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white;
-    font-weight: 700;
-    font-size: 0.78rem;
-    padding: 5px 14px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-  }
-
-  /* NAV */
-  .nav {
-    display: flex;
-    gap: 0.5rem;
-    padding: 1rem 2rem 0;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .nav::-webkit-scrollbar { display: none; }
-
-  .nav-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px 8px 0 0;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-  }
-  .nav-btn:hover { color: var(--text); background: var(--card); }
-  .nav-btn.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-    background: var(--card);
-  }
-
-  /* MAIN */
-  .main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* DASHBOARD */
-  .dash-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  @media(max-width: 900px) { .dash-grid { grid-template-columns: repeat(2,1fr); } }
-  @media(max-width: 500px) { .dash-grid { grid-template-columns: 1fr; } }
-
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-  .stat-card.listen::before { background: var(--listen); }
-  .stat-card.read::before { background: var(--read); }
-  .stat-card.write::before { background: var(--write); }
-  .stat-card.speak::before { background: var(--speak); }
-
-  .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem; }
-  .stat-value { font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 700; line-height: 1; }
-  .stat-value.listen { color: var(--listen); }
-  .stat-value.read { color: var(--read); }
-  .stat-value.write { color: var(--write); }
-  .stat-value.speak { color: var(--speak); }
-  .stat-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
-
-  /* PROGRESS BARS */
-  .progress-section { margin-bottom: 2rem; }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    margin-bottom: 1.2rem;
-    color: var(--text);
-  }
-
-  .progress-row {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.2rem 1.4rem;
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-  }
-  .progress-label { font-size: 0.88rem; font-weight: 500; min-width: 90px; }
-  .progress-bar-bg {
-    flex: 1;
-    height: 8px;
-    background: var(--bg);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
-  .progress-score {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    min-width: 40px;
-    text-align: right;
-  }
-  .target-badge {
-    font-size: 0.7rem;
-    color: var(--muted);
-    background: var(--bg3);
-    padding: 2px 8px;
-    border-radius: 10px;
-    min-width: 60px;
-    text-align: center;
-  }
-
-  /* WEEK SCHEDULE */
-  .week-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.6rem;
-    margin-bottom: 2rem;
-  }
-  @media(max-width: 700px) { .week-grid { grid-template-columns: repeat(3,1fr) } }
-
-  .day-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 0.9rem 0.7rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .day-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .day-card.today { border-color: var(--accent); background: rgba(91,127,255,0.08); }
-  .day-card.completed { border-color: var(--green); }
-  .day-card.completed::after {
-    content: '✓';
-    position: absolute;
-    top: 6px; right: 8px;
-    color: var(--green);
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
-  .day-name { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.3rem; }
-  .day-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
-  .day-tasks { font-size: 0.68rem; color: var(--muted); margin-top: 0.3rem; }
-
-  /* TASKS PAGE */
-  .tasks-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .add-task-form {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-    margin-bottom: 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 0.8rem;
-    align-items: end;
-  }
-  @media(max-width:700px){ .add-task-form { grid-template-columns: 1fr; } }
-
-  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-  .form-input, .form-select {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus, .form-select:focus { border-color: var(--accent); }
-
-  .btn {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: white;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 600;
-    padding: 0.6rem 1.4rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    white-space: nowrap;
-  }
-  .btn:hover { opacity: 0.88; }
-  .btn.sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
-  .btn.danger { background: linear-gradient(135deg, #ff5a5a, #ff3a3a); }
-  .btn.ghost { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
-
-  .task-list { display: flex; flex-direction: column; gap: 0.7rem; }
-
-  .task-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.2s;
-  }
-  .task-item:hover { border-color: var(--card2); }
-  .task-item.done { opacity: 0.55; }
-  .task-item.done .task-text { text-decoration: line-through; }
-
-  .task-check {
-    width: 22px; height: 22px;
-    border: 2px solid var(--border);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s;
-    font-size: 0.75rem;
-    color: white;
-  }
-  .task-check:hover { border-color: var(--green); }
-  .task-item.done .task-check { background: var(--green); border-color: var(--green); }
-
-  .task-text { flex: 1; font-size: 0.92rem; }
-  .task-tag {
-    font-size: 0.7rem;
-    padding: 2px 9px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  .task-tag.listening { background: rgba(62,207,142,0.15); color: var(--listen); }
-  .task-tag.reading { background: rgba(91,127,255,0.15); color: var(--read); }
-  .task-tag.writing { background: rgba(240,192,64,0.15); color: var(--write); }
-  .task-tag.speaking { background: rgba(255,124,95,0.15); color: var(--speak); }
-  .task-tag.general { background: rgba(123,132,168,0.15); color: var(--muted); }
-  .task-tag.vocabulary { background: rgba(124,95,255,0.15); color: var(--accent2); }
-
-  .task-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
-  .task-del:hover { color: var(--red); background: rgba(255,90,90,0.1); }
-
-  /* SCORE TRACKER */
-  .scores-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-  @media(max-width:700px) { .scores-grid { grid-template-columns: 1fr; } }
-
-  .score-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-  }
-  .score-card-title {
-    font-size: 0.82rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 1.2rem;
-  }
-
-  .score-inputs { display: flex; flex-direction: column; gap: 0.8rem; }
-  .score-row {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-  .score-name { font-size: 0.85rem; min-width: 100px; }
-  .score-input {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 0.4rem 0.7rem;
-    border-radius: 8px;
-    outline: none;
-    width: 70px;
-    text-align: center;
-    transition: border-color 0.2s;
-  }
-  .score-input:focus { border-color: var(--accent); }
-
-  .scores-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    font-size: 0.88rem;
-  }
-  .scores-table th {
-    text-align: left;
-    padding: 0.7rem 0.9rem;
-    color: var(--muted);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 500;
-  }
-  .scores-table td {
-    padding: 0.8rem 0.9rem;
-    border-bottom: 1px solid rgba(45,53,84,0.5);
-  }
-  .scores-table tr:hover td { background: rgba(255,255,255,0.02); }
-  .band-chip {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 1rem;
-  }
-  .band-chip.high { color: var(--green); }
-  .band-chip.mid { color: var(--gold); }
-  .band-chip.low { color: var(--red); }
-
-  /* ERROR LOG */
-  .error-form {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.4rem;
-    margin-bottom: 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 0.8rem;
-    align-items: end;
-  }
-  @media(max-width:700px) { .error-form { grid-template-columns: 1fr; } }
-
-  .error-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 3px solid;
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.7rem;
-    font-size: 0.88rem;
-  }
-  .error-item.listening { border-left-color: var(--listen); }
-  .error-item.reading { border-left-color: var(--read); }
-  .error-item.writing { border-left-color: var(--write); }
-  .error-item.speaking { border-left-color: var(--speak); }
-  .error-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-  .error-section-badge {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .error-item.listening .error-section-badge { color: var(--listen); }
-  .error-item.reading .error-section-badge { color: var(--read); }
-  .error-item.writing .error-section-badge { color: var(--write); }
-  .error-item.speaking .error-section-badge { color: var(--speak); }
-  .error-date { font-size: 0.72rem; color: var(--muted); }
-  .error-mistake { color: var(--red); margin-bottom: 0.3rem; }
-  .error-fix { color: var(--green); }
-
-  /* VOCAB FLASHCARDS */
-  .flashcard-container {
-    max-width: 500px;
-    margin: 0 auto 2rem;
-    perspective: 1000px;
-  }
-  .flashcard {
-    width: 100%;
-    height: 220px;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
-    cursor: pointer;
-  }
-  .flashcard.flipped { transform: rotateY(180deg); }
-  .flashcard-face {
-    position: absolute;
-    inset: 0;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    text-align: center;
-    backface-visibility: hidden;
-  }
-  .flashcard-back { transform: rotateY(180deg); }
-  .card-word {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--accent);
-  }
-  .card-hint { font-size: 0.8rem; color: var(--muted); }
-  .card-def { font-size: 1rem; line-height: 1.5; color: var(--text); margin-bottom: 0.7rem; }
-  .card-example { font-size: 0.85rem; color: var(--muted); font-style: italic; }
-  .card-pos {
-    font-size: 0.72rem;
-    color: var(--accent2);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-  }
-
-  .flashcard-controls {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .vocab-counter {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  /* SPEAKING PROMPTS */
-  .prompt-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  .prompt-part {
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.8rem;
-  }
-  .prompt-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    line-height: 1.5;
-    color: var(--text);
-    margin-bottom: 1.5rem;
-  }
-  .prompt-tips {
-    text-align: left;
-    background: var(--bg3);
-    border-radius: 10px;
-    padding: 1rem;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-  .prompt-tips strong { color: var(--accent); }
-
-  /* CHARTS using CSS */
-  .mini-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    height: 80px;
-    padding-top: 10px;
-  }
-  .chart-bar {
-    flex: 1;
-    border-radius: 4px 4px 0 0;
-    transition: height 0.4s ease;
-    position: relative;
-    min-height: 4px;
-  }
-  .chart-bar::after {
-    content: attr(data-val);
-    position: absolute;
-    top: -18px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.65rem;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  /* ROADMAP */
-  .roadmap-phase {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.6rem;
-    margin-bottom: 1.2rem;
-  }
-  .phase-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    cursor: pointer;
-  }
-  .phase-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent);
-    opacity: 0.4;
-    line-height: 1;
-    min-width: 48px;
-  }
-  .phase-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; }
-  .phase-weeks { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
-  .phase-body { display: none; }
-  .phase-body.open { display: block; }
-
-  .week-item {
-    border-left: 2px solid var(--border);
-    padding: 0.6rem 0 0.6rem 1.2rem;
-    margin-left: 1rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.88rem;
-    color: var(--muted);
-    position: relative;
-  }
-  .week-item::before {
-    content: '';
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: absolute;
-    left: -5px; top: 12px;
-    opacity: 0.5;
-  }
-  .week-item strong { color: var(--text); }
-
-  /* MOTIVATION */
-  .quote-card {
-    background: linear-gradient(135deg, rgba(91,127,255,0.08), rgba(124,95,255,0.08));
-    border: 1px solid rgba(91,127,255,0.2);
-    border-radius: 16px;
-    padding: 2rem;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  .quote-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-style: italic;
-    line-height: 1.6;
-    color: var(--text);
-    margin-bottom: 0.8rem;
-  }
-  .quote-author { font-size: 0.82rem; color: var(--muted); }
-
-  .streak-display {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.88rem;
-    color: var(--gold);
-    font-weight: 600;
-  }
-  .streak-fire { font-size: 1.2rem; }
-
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: var(--muted);
-    font-size: 0.92rem;
-  }
-  .empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{--bg:#0a0c12;--bg2:#111420;--bg3:#181d2e;--card:#1c2235;--card2:#222840;--border:#2d3554;--accent:#5b7fff;--accent2:#7c5fff;--gold:#f0c040;--green:#3ecf8e;--red:#ff5a5a;--text:#e8eaf6;--muted:#7b84a8;--listen:#3ecf8e;--read:#5b7fff;--write:#f0c040;--speak:#ff7c5f;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+.header{background:linear-gradient(135deg,var(--bg2),var(--bg3));border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:64px;gap:1rem;}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;}
+.header-date{font-size:.82rem;color:var(--muted);}
+.band-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;font-size:.78rem;padding:5px 14px;border-radius:20px;white-space:nowrap;}
+.db-pill{font-size:.72rem;padding:3px 10px;border-radius:10px;font-weight:600;}
+.db-pill.ok{background:rgba(62,207,142,.15);color:var(--green);}
+.db-pill.err{background:rgba(255,90,90,.15);color:var(--red);}
+.nav{display:flex;gap:.3rem;padding:.8rem 2rem 0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:500;padding:.55rem 1.1rem;border-radius:8px 8px 0 0;cursor:pointer;transition:all .2s;white-space:nowrap;border-bottom:2px solid transparent;}
+.nav-btn:hover{color:var(--text);background:var(--card);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--card);}
+.main{padding:2rem;max-width:1200px;margin:0 auto;}
+.page{display:none;animation:fi .25s ease;}
+.page.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+#loadingOverlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:1rem;}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+@media(max-width:900px){.dash-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.dash-grid{grid-template-columns:1fr;}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.listen::before{background:var(--listen);}.stat-card.read::before{background:var(--read);}.stat-card.write::before{background:var(--write);}.stat-card.speak::before{background:var(--speak);}
+.stat-label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem;}
+.stat-value{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;line-height:1;}
+.stat-value.listen{color:var(--listen);}.stat-value.read{color:var(--read);}.stat-value.write{color:var(--write);}.stat-value.speak{color:var(--speak);}
+.stat-sub{font-size:.78rem;color:var(--muted);margin-top:.3rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:1.2rem;color:var(--text);}
+.progress-section{margin-bottom:2rem;}
+.progress-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:.8rem;display:flex;align-items:center;gap:1.2rem;}
+.progress-label{font-size:.88rem;font-weight:500;min-width:100px;}
+.progress-bar-bg{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.progress-score{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;min-width:40px;text-align:right;}
+.target-badge{font-size:.7rem;color:var(--muted);background:var(--bg3);padding:2px 8px;border-radius:10px;min-width:66px;text-align:center;}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.6rem;margin-bottom:2rem;}
+@media(max-width:700px){.week-grid{grid-template-columns:repeat(3,1fr);}}
+.day-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem .7rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.day-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.day-card.today{border-color:var(--accent);background:rgba(91,127,255,.08);}
+.day-card.completed{border-color:var(--green);}
+.day-card.completed::after{content:'✓';position:absolute;top:6px;right:8px;color:var(--green);font-size:.8rem;font-weight:700;}
+.day-name{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.3rem;}
+.day-num{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;}
+.day-tasks{font-size:.68rem;color:var(--muted);margin-top:.3rem;}
+.card-form{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.5rem;}
+.fg{display:flex;flex-direction:column;gap:.4rem;}
+.fl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.fi,.fs,.fta{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.55rem .9rem;border-radius:8px;outline:none;transition:border-color .2s;width:100%;}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--accent);}
+.fta{min-height:70px;resize:vertical;}
+.fs option{background:var(--bg3);}
+.fg4{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:.8rem;align-items:end;}
+.fg3{display:grid;grid-template-columns:1fr 1fr auto;gap:.8rem;align-items:end;}
+@media(max-width:700px){.fg4,.fg3{grid-template-columns:1fr;}}
+.btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;padding:.6rem 1.4rem;border-radius:8px;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+.btn:hover{opacity:.88;}.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn.sm{padding:.4rem .9rem;font-size:.8rem;}
+.btn.danger{background:linear-gradient(135deg,#ff5a5a,#c0392b);}
+.btn.ghost{background:var(--bg3);border:1px solid var(--border);color:var(--text);}
+.btn.success{background:linear-gradient(135deg,var(--green),#2aa86e);}
+.fbar{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.task-list{display:flex;flex-direction:column;gap:.7rem;}
+.task-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;transition:all .2s;}
+.task-item:hover{border-color:var(--card2);}
+.task-item.done{opacity:.5;}
+.task-item.done .ttext{text-decoration:line-through;}
+.tchk{width:22px;height:22px;border:2px solid var(--border);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:.75rem;color:#fff;}
+.tchk:hover{border-color:var(--green);}
+.task-item.done .tchk{background:var(--green);border-color:var(--green);}
+.ttext{flex:1;font-size:.92rem;min-width:0;}
+.ttag{font-size:.7rem;padding:2px 9px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;flex-shrink:0;}
+.ttag.listening{background:rgba(62,207,142,.15);color:var(--listen);}
+.ttag.reading{background:rgba(91,127,255,.15);color:var(--read);}
+.ttag.writing{background:rgba(240,192,64,.15);color:var(--write);}
+.ttag.speaking{background:rgba(255,124,95,.15);color:var(--speak);}
+.ttag.general{background:rgba(123,132,168,.15);color:var(--muted);}
+.ttag.vocabulary{background:rgba(124,95,255,.15);color:var(--accent2);}
+.tdel{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:4px;transition:all .2s;}
+.tdel:hover{color:var(--red);background:rgba(255,90,90,.1);}
+.tdate{font-size:.72rem;color:var(--muted);margin-top:.15rem;}
+.scores-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+@media(max-width:700px){.scores-grid{grid-template-columns:1fr;}}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;}
+.sc-title{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:1.2rem;}
+.srow{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;}
+.snl{font-size:.85rem;min-width:100px;}
+.si{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;padding:.4rem .7rem;border-radius:8px;outline:none;width:75px;text-align:center;transition:border-color .2s;}
+.si:focus{border-color:var(--accent);}
+.stbl{width:100%;border-collapse:collapse;font-size:.88rem;}
+.stbl th{text-align:left;padding:.7rem .9rem;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:500;}
+.stbl td{padding:.8rem .9rem;border-bottom:1px solid rgba(45,53,84,.5);}
+.stbl tr:hover td{background:rgba(255,255,255,.02);}
+.bc{font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;}
+.bc.high{color:var(--green);}.bc.mid{color:var(--gold);}.bc.low{color:var(--red);}
+.mchart{display:flex;align-items:flex-end;gap:6px;height:80px;padding-top:20px;}
+.cbar{flex:1;border-radius:4px 4px 0 0;transition:height .4s;position:relative;min-height:4px;}
+.cbar::after{content:attr(data-val);position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--muted);white-space:nowrap;}
+.ei{background:var(--card);border:1px solid var(--border);border-left:3px solid;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.7rem;}
+.ei.listening{border-left-color:var(--listen);}.ei.reading{border-left-color:var(--read);}.ei.writing{border-left-color:var(--write);}.ei.speaking{border-left-color:var(--speak);}
+.etop{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.ebadge{font-size:.7rem;text-transform:uppercase;font-weight:600;letter-spacing:.5px;}
+.ei.listening .ebadge{color:var(--listen);}.ei.reading .ebadge{color:var(--read);}.ei.writing .ebadge{color:var(--write);}.ei.speaking .ebadge{color:var(--speak);}
+.edate{font-size:.72rem;color:var(--muted);}
+.emistake{color:var(--red);margin-bottom:.3rem;font-size:.88rem;}
+.efix{color:var(--green);font-size:.88rem;}
+.enote{color:var(--muted);font-size:.82rem;margin-top:.3rem;font-style:italic;}
+.flashcard-container{max-width:500px;margin:0 auto 1.5rem;perspective:1000px;}
+.flashcard{width:100%;height:220px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.ff{position:absolute;inset:0;background:var(--card);border:1px solid var(--border);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;backface-visibility:hidden;}
+.fb{transform:rotateY(180deg);}
+.cword{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:.5rem;color:var(--accent);}
+.chint{font-size:.8rem;color:var(--muted);}
+.cdef{font-size:1rem;line-height:1.5;color:var(--text);margin-bottom:.7rem;}
+.cex{font-size:.85rem;color:var(--muted);font-style:italic;}
+.cpos{font-size:.72rem;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem;}
+.fcc{display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap;}
+.vcounter{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:1rem;}
+.kbadge{position:absolute;top:10px;right:12px;font-size:.7rem;padding:2px 8px;border-radius:8px;font-weight:600;}
+.kbadge.known{background:rgba(62,207,142,.2);color:var(--green);}
+.kbadge.learning{background:rgba(255,90,90,.15);color:var(--red);}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;text-align:center;}
+.ppart{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;}
+.ptext{font-family:'Playfair Display',serif;font-size:1.25rem;line-height:1.6;color:var(--text);margin-bottom:1.5rem;white-space:pre-line;}
+.ptip{text-align:left;background:var(--bg3);border-radius:10px;padding:1rem;font-size:.85rem;color:var(--muted);}
+.ptip strong{color:var(--accent);}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;font-size:.85rem;}
+@media(max-width:600px){.pgrid{grid-template-columns:1fr;}}
+.pgt{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;color:var(--accent);margin-bottom:.4rem;}
+.pi{color:var(--muted);padding:.15rem 0;}
+.rphase{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.2rem;}
+.rphdr{display:flex;align-items:center;gap:1rem;cursor:pointer;user-select:none;}
+.rnum{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--accent);opacity:.4;line-height:1;min-width:48px;}
+.rtitle{font-family:'Playfair Display',serif;font-size:1.2rem;}
+.rmeta{font-size:.8rem;color:var(--muted);margin-top:.2rem;}
+.rbody{display:none;margin-top:1.2rem;}
+.rbody.open{display:block;}
+.witem{border-left:2px solid var(--border);padding:.6rem 0 .6rem 1.2rem;margin-left:1rem;margin-bottom:.5rem;font-size:.88rem;color:var(--muted);position:relative;}
+.witem::before{content:'';width:8px;height:8px;background:var(--accent);border-radius:50%;position:absolute;left:-5px;top:12px;opacity:.5;}
+.witem strong{color:var(--text);}
+.wbtn{font-size:.72rem;padding:2px 8px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .2s;}
+.wbtn.u{background:var(--bg3);border:1px solid var(--border);color:var(--muted);}
+.wbtn.d{background:rgba(62,207,142,.2);color:var(--green);border:1px solid rgba(62,207,142,.3);}
+.qcard{background:linear-gradient(135deg,rgba(91,127,255,.08),rgba(124,95,255,.08));border:1px solid rgba(91,127,255,.2);border-radius:16px;padding:2rem;text-align:center;margin-bottom:2rem;}
+.qtext{font-family:'Playfair Display',serif;font-size:1.25rem;font-style:italic;line-height:1.6;margin-bottom:.8rem;}
+.qauth{font-size:.82rem;color:var(--muted);}
+.streak{display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:var(--gold);font-weight:600;}
+.empty{text-align:center;padding:3rem;color:var(--muted);font-size:.92rem;}
+.eic{font-size:2.5rem;margin-bottom:.8rem;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.4rem;font-size:.88rem;color:var(--text);z-index:9999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.ok{border-color:var(--green);color:var(--green);}
+#toast.er{border-color:var(--red);color:var(--red);}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 </style>
 </head>
 <body>
 
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:.9rem">Initializing IndexedDB database…</div>
+</div>
+
+<div id="toast"></div>
+
 <div class="header">
   <div class="logo">IELTS Band 8 ✦ Platform</div>
-  <div id="headerDate" class="header-date"></div>
-  <div class="band-badge">TARGET: 8.0</div>
+  <div id="hDate" class="header-date"></div>
+  <div style="display:flex;align-items:center;gap:.7rem">
+    <span id="dbPill" class="db-pill ok">● DB Ready</span>
+    <div class="band-badge">TARGET: 8.0</div>
+  </div>
 </div>
 
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('dashboard')">📊 Dashboard</button>
-  <button class="nav-btn" onclick="showPage('tasks')">✅ Daily Tasks</button>
-  <button class="nav-btn" onclick="showPage('scores')">🎯 Score Tracker</button>
-  <button class="nav-btn" onclick="showPage('errors')">❌ Error Log</button>
-  <button class="nav-btn" onclick="showPage('vocab')">📚 Vocabulary</button>
-  <button class="nav-btn" onclick="showPage('speaking')">🎤 Speaking Practice</button>
-  <button class="nav-btn" onclick="showPage('roadmap')">🗺 Roadmap</button>
+  <button class="nav-btn active" data-p="dashboard">📊 Dashboard</button>
+  <button class="nav-btn" data-p="tasks">✅ Daily Tasks</button>
+  <button class="nav-btn" data-p="scores">🎯 Scores</button>
+  <button class="nav-btn" data-p="errors">❌ Error Log</button>
+  <button class="nav-btn" data-p="vocab">📚 Vocabulary</button>
+  <button class="nav-btn" data-p="speaking">🎤 Speaking</button>
+  <button class="nav-btn" data-p="roadmap">🗺 Roadmap</button>
+  <button class="nav-btn" data-p="settings">⚙️ Settings</button>
 </nav>
 
 <main class="main">
 
-  <!-- DASHBOARD -->
-  <div id="page-dashboard" class="page active">
-    <div class="quote-card" id="quoteCard">
-      <div class="quote-text" id="quoteText">"The secret of getting ahead is getting started."</div>
-      <div class="quote-author">— Mark Twain</div>
-    </div>
-
-    <div class="dash-grid">
-      <div class="stat-card listen">
-        <div class="stat-label">Listening</div>
-        <div class="stat-value listen" id="dashListen">—</div>
-        <div class="stat-sub">Current Band</div>
-      </div>
-      <div class="stat-card read">
-        <div class="stat-label">Reading</div>
-        <div class="stat-value read" id="dashRead">—</div>
-        <div class="stat-sub">Current Band</div>
-      </div>
-      <div class="stat-card write">
-        <div class="stat-label">Writing</div>
-        <div class="stat-value write" id="dashWrite">—</div>
-        <div class="stat-sub">Current Band</div>
-      </div>
-      <div class="stat-card speak">
-        <div class="stat-label">Speaking</div>
-        <div class="stat-value speak" id="dashSpeak">—</div>
-        <div class="stat-sub">Current Band</div>
-      </div>
-    </div>
-
-    <div class="progress-section">
-      <h2 class="section-title">Band Progress to Target 8.0</h2>
-      <div class="progress-row">
-        <span class="progress-label" style="color:var(--listen)">🎧 Listening</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pListen" style="background:var(--listen);width:0%"></div></div>
-        <span class="progress-score listen" id="pListenVal">—</span>
-        <span class="target-badge">Target: 8.0</span>
-      </div>
-      <div class="progress-row">
-        <span class="progress-label" style="color:var(--read)">📖 Reading</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pRead" style="background:var(--read);width:0%"></div></div>
-        <span class="progress-score read" id="pReadVal">—</span>
-        <span class="target-badge">Target: 8.0</span>
-      </div>
-      <div class="progress-row">
-        <span class="progress-label" style="color:var(--write)">✍️ Writing</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pWrite" style="background:var(--write);width:0%"></div></div>
-        <span class="progress-score write" id="pWriteVal">—</span>
-        <span class="target-badge">Target: 7.5</span>
-      </div>
-      <div class="progress-row">
-        <span class="progress-label" style="color:var(--speak)">🎤 Speaking</span>
-        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pSpeak" style="background:var(--speak);width:0%"></div></div>
-        <span class="progress-score speak" id="pSpeakVal">—</span>
-        <span class="target-badge">Target: 8.0</span>
-      </div>
-    </div>
-
-    <div style="margin-bottom:2rem">
-      <h2 class="section-title">This Week</h2>
-      <div class="week-grid" id="weekGrid"></div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-      <div class="stat-card" style="padding:1.4rem">
-        <div class="stat-label">Tasks Completed Today</div>
-        <div class="stat-value" id="todayTasks" style="color:var(--accent)">0</div>
-        <div class="stat-sub" id="todayTotal">of 0 tasks</div>
-      </div>
-      <div class="stat-card" style="padding:1.4rem">
-        <div class="stat-label">Errors Logged Total</div>
-        <div class="stat-value" id="totalErrors" style="color:var(--red)">0</div>
-        <div class="stat-sub">mistakes analyzed</div>
-      </div>
-    </div>
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="qcard"><div class="qtext" id="qtext">"The secret of getting ahead is getting started."</div><div class="qauth" id="qauth">— Mark Twain</div></div>
+  <div class="dash-grid">
+    <div class="stat-card listen"><div class="stat-label">Listening</div><div class="stat-value listen" id="dL">—</div><div class="stat-sub">Current Band</div></div>
+    <div class="stat-card read"><div class="stat-label">Reading</div><div class="stat-value read" id="dR">—</div><div class="stat-sub">Current Band</div></div>
+    <div class="stat-card write"><div class="stat-label">Writing</div><div class="stat-value write" id="dW">—</div><div class="stat-sub">Current Band</div></div>
+    <div class="stat-card speak"><div class="stat-label">Speaking</div><div class="stat-value speak" id="dS">—</div><div class="stat-sub">Current Band</div></div>
   </div>
+  <div class="progress-section">
+    <h2 class="section-title">Band Progress → Target 8.0</h2>
+    <div class="progress-row"><span class="progress-label" style="color:var(--listen)">🎧 Listening</span><div class="progress-bar-bg"><div class="progress-bar-fill" id="pbL" style="background:var(--listen);width:0%"></div></div><span class="progress-score listen" id="pvL">—</span><span class="target-badge">Target 8.0</span></div>
+    <div class="progress-row"><span class="progress-label" style="color:var(--read)">📖 Reading</span><div class="progress-bar-bg"><div class="progress-bar-fill" id="pbR" style="background:var(--read);width:0%"></div></div><span class="progress-score read" id="pvR">—</span><span class="target-badge">Target 8.0</span></div>
+    <div class="progress-row"><span class="progress-label" style="color:var(--write)">✍️ Writing</span><div class="progress-bar-bg"><div class="progress-bar-fill" id="pbW" style="background:var(--write);width:0%"></div></div><span class="progress-score write" id="pvW">—</span><span class="target-badge">Target 7.5</span></div>
+    <div class="progress-row"><span class="progress-label" style="color:var(--speak)">🎤 Speaking</span><div class="progress-bar-bg"><div class="progress-bar-fill" id="pbS" style="background:var(--speak);width:0%"></div></div><span class="progress-score speak" id="pvS">—</span><span class="target-badge">Target 8.0</span></div>
+  </div>
+  <div style="margin-bottom:2rem"><h2 class="section-title">This Week</h2><div class="week-grid" id="weekGrid"></div></div>
+  <div class="two-col">
+    <div class="stat-card" style="padding:1.4rem"><div class="stat-label">Tasks Done Today</div><div class="stat-value" id="dTasks" style="color:var(--accent)">0</div><div class="stat-sub" id="dTasksOf">of 0 tasks</div></div>
+    <div class="stat-card" style="padding:1.4rem"><div class="stat-label">Errors Logged Total</div><div class="stat-value" id="dErrors" style="color:var(--red)">0</div><div class="stat-sub">mistakes analyzed</div></div>
+  </div>
+</div>
 
-  <!-- TASKS PAGE -->
-  <div id="page-tasks" class="page">
-    <div class="tasks-header">
-      <h2 class="section-title" style="margin:0">Daily Tasks</h2>
-      <div class="streak-display"><span class="streak-fire">🔥</span><span id="streakCount">0 day streak</span></div>
-    </div>
-
-    <div class="add-task-form">
-      <div class="form-group">
-        <label class="form-label">Task Description</label>
-        <input class="form-input" id="taskInput" type="text" placeholder="e.g. Complete Listening Section 3–4">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Section</label>
-        <select class="form-select" id="taskSection">
-          <option value="listening">🎧 Listening</option>
-          <option value="reading">📖 Reading</option>
-          <option value="writing">✍️ Writing</option>
-          <option value="speaking">🎤 Speaking</option>
-          <option value="vocabulary">📚 Vocabulary</option>
-          <option value="general">📌 General</option>
+<!-- TASKS -->
+<div id="page-tasks" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+    <h2 class="section-title" style="margin:0">Daily Tasks</h2>
+    <div class="streak">🔥 <span id="streakTxt">0 day streak</span></div>
+  </div>
+  <div class="card-form">
+    <div class="fg4">
+      <div class="fg"><label class="fl">Task Description</label><input class="fi" id="tIn" type="text" placeholder="e.g. Complete Listening Section 3–4" onkeydown="if(event.key==='Enter')addTask()"></div>
+      <div class="fg"><label class="fl">Section</label>
+        <select class="fs" id="tSec">
+          <option value="listening">🎧 Listening</option><option value="reading">📖 Reading</option>
+          <option value="writing">✍️ Writing</option><option value="speaking">🎤 Speaking</option>
+          <option value="vocabulary">📚 Vocabulary</option><option value="general">📌 General</option>
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input class="form-input" id="taskDate" type="date">
-      </div>
-      <button class="btn" onclick="addTask()">+ Add Task</button>
-    </div>
-
-    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
-      <button class="btn ghost sm" onclick="filterTasks('all')">All</button>
-      <button class="btn ghost sm" onclick="filterTasks('listening')">🎧 Listening</button>
-      <button class="btn ghost sm" onclick="filterTasks('reading')">📖 Reading</button>
-      <button class="btn ghost sm" onclick="filterTasks('writing')">✍️ Writing</button>
-      <button class="btn ghost sm" onclick="filterTasks('speaking')">🎤 Speaking</button>
-      <button class="btn ghost sm" onclick="filterTasks('vocabulary')">📚 Vocab</button>
-      <button class="btn ghost sm" onclick="clearCompletedTasks()">🗑 Clear Done</button>
-    </div>
-
-    <div class="task-list" id="taskList">
-      <div class="empty-state"><div class="empty-icon">✅</div>No tasks yet. Add your first task above!</div>
+      <div class="fg"><label class="fl">Date</label><input class="fi" id="tDate" type="date"></div>
+      <button class="btn" onclick="addTask()">+ Add</button>
     </div>
   </div>
+  <div class="fbar">
+    <button class="btn ghost sm" onclick="setTF('all')">All</button>
+    <button class="btn ghost sm" onclick="setTF('listening')">🎧</button>
+    <button class="btn ghost sm" onclick="setTF('reading')">📖</button>
+    <button class="btn ghost sm" onclick="setTF('writing')">✍️</button>
+    <button class="btn ghost sm" onclick="setTF('speaking')">🎤</button>
+    <button class="btn ghost sm" onclick="setTF('vocabulary')">📚</button>
+    <button class="btn ghost sm" style="margin-left:auto" onclick="clearDone()">🗑 Clear Done</button>
+  </div>
+  <div class="task-list" id="taskList"><div class="empty"><div class="eic">✅</div>No tasks yet. Add one above!</div></div>
+</div>
 
-  <!-- SCORES PAGE -->
-  <div id="page-scores" class="page">
-    <h2 class="section-title">Mock Test Score Tracker</h2>
-
-    <div class="scores-grid">
-      <div class="score-card">
-        <div class="score-card-title">Log New Mock Test</div>
-        <div class="score-inputs">
-          <div class="score-row">
-            <span class="score-name">Date</span>
-            <input class="form-input" id="scoreDate" type="date" style="width:auto;flex:1">
-          </div>
-          <div class="score-row">
-            <span class="score-name">🎧 Listening</span>
-            <input class="score-input" id="scoreListen" type="number" min="0" max="9" step="0.5" placeholder="0.0">
-          </div>
-          <div class="score-row">
-            <span class="score-name">📖 Reading</span>
-            <input class="score-input" id="scoreRead" type="number" min="0" max="9" step="0.5" placeholder="0.0">
-          </div>
-          <div class="score-row">
-            <span class="score-name">✍️ Writing</span>
-            <input class="score-input" id="scoreWrite" type="number" min="0" max="9" step="0.5" placeholder="0.0">
-          </div>
-          <div class="score-row">
-            <span class="score-name">🎤 Speaking</span>
-            <input class="score-input" id="scoreSpeak" type="number" min="0" max="9" step="0.5" placeholder="0.0">
-          </div>
-          <div class="score-row">
-            <span class="score-name">Mock Name</span>
-            <input class="form-input" id="scoreName" type="text" placeholder="e.g. Mock #1" style="flex:1">
-          </div>
-          <button class="btn" onclick="addScore()" style="margin-top:0.5rem">Save Score</button>
-        </div>
-      </div>
-
-      <div class="score-card">
-        <div class="score-card-title">Band Score Chart</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:0.8rem">Overall band trend across mocks</div>
-        <div class="mini-chart" id="scoreChart">
-          <div style="color:var(--muted);font-size:0.82rem;text-align:center;width:100%;padding-top:20px">No scores logged yet</div>
-        </div>
-        <div style="height:1px;background:var(--border);margin:0.8rem 0"></div>
-        <div style="font-size:0.82rem;color:var(--muted)">
-          <div style="display:flex;justify-content:space-between;padding:0.2rem 0"><span>Best overall:</span><span id="bestBand" class="band-chip high">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:0.2rem 0"><span>Latest overall:</span><span id="latestBand" class="band-chip mid">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:0.2rem 0"><span>Improvement:</span><span id="improvement" style="color:var(--green)">—</span></div>
-        </div>
-      </div>
+<!-- SCORES -->
+<div id="page-scores" class="page">
+  <h2 class="section-title">Mock Test Score Tracker</h2>
+  <div class="scores-grid">
+    <div class="sc">
+      <div class="sc-title">Log New Mock Test</div>
+      <div class="srow"><span class="snl">Date</span><input class="fi" id="scDate" type="date" style="flex:1"></div>
+      <div class="srow"><span class="snl">🎧 Listening</span><input class="si" id="scL" type="number" min="0" max="9" step="0.5" placeholder="7.0"></div>
+      <div class="srow"><span class="snl">📖 Reading</span><input class="si" id="scR" type="number" min="0" max="9" step="0.5" placeholder="7.0"></div>
+      <div class="srow"><span class="snl">✍️ Writing</span><input class="si" id="scW" type="number" min="0" max="9" step="0.5" placeholder="7.0"></div>
+      <div class="srow"><span class="snl">🎤 Speaking</span><input class="si" id="scS" type="number" min="0" max="9" step="0.5" placeholder="7.0"></div>
+      <div class="srow"><span class="snl">Mock Name</span><input class="fi" id="scName" type="text" placeholder="Mock #1" style="flex:1" onkeydown="if(event.key==='Enter')addScore()"></div>
+      <button class="btn" style="width:100%;margin-top:.8rem" onclick="addScore()">💾 Save Score</button>
     </div>
-
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:1rem">All Mock Tests</h3>
-    <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border)">
-      <table class="scores-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Mock</th>
-            <th>🎧 Listen</th>
-            <th>📖 Read</th>
-            <th>✍️ Write</th>
-            <th>🎤 Speak</th>
-            <th>Overall</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="scoresTableBody">
-          <tr><td colspan="8" class="empty-state" style="padding:2rem">No mock tests logged yet</td></tr>
-        </tbody>
-      </table>
+    <div class="sc">
+      <div class="sc-title">Overall Band Trend</div>
+      <div class="mchart" id="scChart"><div style="color:var(--muted);font-size:.82rem;text-align:center;width:100%;padding-top:20px">No scores yet</div></div>
+      <div style="height:1px;background:var(--border);margin:.8rem 0"></div>
+      <div style="font-size:.85rem;display:flex;flex-direction:column;gap:.4rem">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Best overall:</span><span id="scBest" class="bc high">—</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Latest overall:</span><span id="scLatest" class="bc mid">—</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Total improvement:</span><span id="scImprove" style="color:var(--green)">—</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Mocks taken:</span><span id="scCount">0</span></div>
+      </div>
     </div>
   </div>
+  <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:1rem">All Mock Tests</h3>
+  <div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border)">
+    <table class="stbl"><thead><tr><th>Date</th><th>Mock</th><th>🎧</th><th>📖</th><th>✍️</th><th>🎤</th><th>Overall</th><th></th></tr></thead>
+    <tbody id="scBody"><tr><td colspan="8" class="empty" style="padding:2rem">No mock tests logged yet</td></tr></tbody></table>
+  </div>
+</div>
 
-  <!-- ERROR LOG -->
-  <div id="page-errors" class="page">
-    <h2 class="section-title">Mistake Error Log</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem">Every mistake is data. Log it, understand it, never repeat it.</p>
-
-    <div class="error-form">
-      <div class="form-group">
-        <label class="form-label">Section</label>
-        <select class="form-select" id="errorSection">
-          <option value="listening">🎧 Listening</option>
-          <option value="reading">📖 Reading</option>
-          <option value="writing">✍️ Writing</option>
-          <option value="speaking">🎤 Speaking</option>
+<!-- ERRORS -->
+<div id="page-errors" class="page">
+  <h2 class="section-title">Mistake Error Log</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem">Every mistake is data. Log it, understand it, never repeat it.</p>
+  <div class="card-form">
+    <div class="fg4">
+      <div class="fg"><label class="fl">Section</label>
+        <select class="fs" id="erSec">
+          <option value="listening">🎧 Listening</option><option value="reading">📖 Reading</option>
+          <option value="writing">✍️ Writing</option><option value="speaking">🎤 Speaking</option>
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">What you got wrong</label>
-        <input class="form-input" id="errorMistake" type="text" placeholder="e.g. Missed Section 4 Q38 — distraction">
-      </div>
-      <div class="form-group">
-        <label class="form-label">How to fix it</label>
-        <input class="form-input" id="errorFix" type="text" placeholder="e.g. Practice predicting answers before listening">
-      </div>
-      <button class="btn" onclick="addError()">Log Error</button>
+      <div class="fg"><label class="fl">What you got wrong</label><input class="fi" id="erMis" type="text" placeholder="e.g. Missed Q38 — distraction trap"></div>
+      <div class="fg"><label class="fl">How to fix it</label><input class="fi" id="erFix" type="text" placeholder="e.g. Predict answers before listening"></div>
+      <button class="btn" onclick="addError()">Log</button>
     </div>
-
-    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
-      <button class="btn ghost sm" onclick="filterErrors('all')">All</button>
-      <button class="btn ghost sm" onclick="filterErrors('listening')">🎧 Listening</button>
-      <button class="btn ghost sm" onclick="filterErrors('reading')">📖 Reading</button>
-      <button class="btn ghost sm" onclick="filterErrors('writing')">✍️ Writing</button>
-      <button class="btn ghost sm" onclick="filterErrors('speaking')">🎤 Speaking</button>
-    </div>
-
-    <div id="errorList">
-      <div class="empty-state"><div class="empty-icon">❌</div>No errors logged yet. Start your first mock test and log your mistakes here.</div>
-    </div>
+    <div class="fg" style="margin-top:.8rem"><label class="fl">Notes (optional)</label><textarea class="fta" id="erNote" placeholder="Any extra context, pattern you noticed…"></textarea></div>
   </div>
+  <div class="fbar">
+    <button class="btn ghost sm" onclick="setEF('all')">All</button>
+    <button class="btn ghost sm" onclick="setEF('listening')">🎧 Listening</button>
+    <button class="btn ghost sm" onclick="setEF('reading')">📖 Reading</button>
+    <button class="btn ghost sm" onclick="setEF('writing')">✍️ Writing</button>
+    <button class="btn ghost sm" onclick="setEF('speaking')">🎤 Speaking</button>
+  </div>
+  <div id="errList"><div class="empty"><div class="eic">❌</div>No errors logged yet.</div></div>
+</div>
 
-  <!-- VOCABULARY FLASHCARDS -->
-  <div id="page-vocab" class="page">
-    <h2 class="section-title">Vocabulary Flashcards</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem">Academic Word List — click the card to reveal the definition.</p>
-
-    <div class="vocab-counter" id="vocabCounter">Card 1 of 40</div>
-
-    <div class="flashcard-container">
-      <div class="flashcard" id="flashcard" onclick="flipCard()">
-        <div class="flashcard-face">
-          <div class="card-word" id="cardWord">analyse</div>
-          <div class="card-hint">Click to see definition</div>
-        </div>
-        <div class="flashcard-face flashcard-back">
-          <div class="card-pos" id="cardPos">verb</div>
-          <div class="card-def" id="cardDef">To examine something in detail in order to understand it or explain it.</div>
-          <div class="card-example" id="cardEx">"Researchers need to analyse the data carefully before drawing conclusions."</div>
-        </div>
+<!-- VOCAB -->
+<div id="page-vocab" class="page">
+  <h2 class="section-title">Vocabulary Flashcards</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem">40 Academic Word List cards + your custom words. Click card to flip.</p>
+  <div class="vcounter" id="vctr">Card 1 of 40</div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="fc" onclick="flipCard()">
+      <div class="ff" style="position:relative">
+        <span class="kbadge" id="kb" style="display:none"></span>
+        <div class="cword" id="cWord">analyse</div>
+        <div class="chint">Click to see definition</div>
       </div>
-    </div>
-
-    <div class="flashcard-controls">
-      <button class="btn ghost" onclick="prevCard()">← Previous</button>
-      <button class="btn ghost" onclick="flipCard()">🔄 Flip</button>
-      <button class="btn" onclick="nextCard()">Next →</button>
-    </div>
-
-    <div style="margin-top:2rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem">
-      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.8px">Add Your Own Vocabulary</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:0.8rem;align-items:end">
-        <div class="form-group">
-          <label class="form-label">Word</label>
-          <input class="form-input" id="vocabWord" type="text" placeholder="e.g. plausible">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Definition</label>
-          <input class="form-input" id="vocabDef" type="text" placeholder="seeming reasonable or probable">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Example sentence</label>
-          <input class="form-input" id="vocabEx" type="text" placeholder="His explanation was plausible.">
-        </div>
-        <button class="btn" onclick="addVocabCard()">+ Add</button>
+      <div class="ff fb">
+        <div class="cpos" id="cPos">verb</div>
+        <div class="cdef" id="cDef">To examine something in detail in order to understand it.</div>
+        <div class="cex" id="cEx">"Researchers analyse the data carefully before drawing conclusions."</div>
       </div>
     </div>
   </div>
-
-  <!-- SPEAKING PRACTICE -->
-  <div id="page-speaking" class="page">
-    <h2 class="section-title">Speaking Practice Prompts</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem">Press "New Prompt" to get a random question. Record yourself. Listen back. Improve.</p>
-
-    <div class="prompt-card" id="promptCard">
-      <div class="prompt-part" id="promptPart">PART 1 — Personal Questions</div>
-      <div class="prompt-text" id="promptText">Click "New Prompt" to get started</div>
-      <div class="prompt-tips" id="promptTips">
-        <strong>Tip:</strong> Aim for 2–3 sentences per Part 1 answer. Use the AREA technique: <strong>Answer → Reason → Example → Add more.</strong>
-      </div>
+  <div class="fcc">
+    <button class="btn ghost" onclick="prevCard()">← Prev</button>
+    <button class="btn ghost" onclick="markCard('learning')">😅 Learning</button>
+    <button class="btn success" onclick="markCard('known')">✓ Known</button>
+    <button class="btn ghost" onclick="flipCard()">🔄 Flip</button>
+    <button class="btn" onclick="nextCard()">Next →</button>
+  </div>
+  <div style="display:flex;gap:.7rem;justify-content:center;margin-top:.8rem;font-size:.82rem;color:var(--muted);flex-wrap:wrap">
+    <span>🟢 Known: <strong id="vKnown" style="color:var(--green)">0</strong></span>
+    <span>🔴 Learning: <strong id="vLearning" style="color:var(--red)">0</strong></span>
+    <span>⚪ Unseen: <strong id="vUnseen">0</strong></span>
+    <button class="btn ghost sm" onclick="resetVocab()">↺ Reset Progress</button>
+  </div>
+  <div class="card-form" style="margin-top:2rem">
+    <div class="sc-title">Add Custom Vocabulary</div>
+    <div class="fg4" style="margin-top:.8rem">
+      <div class="fg"><label class="fl">Word</label><input class="fi" id="vWord" type="text" placeholder="e.g. plausible"></div>
+      <div class="fg"><label class="fl">Part of Speech</label><input class="fi" id="vPos" type="text" placeholder="adjective"></div>
+      <div class="fg"><label class="fl">Definition</label><input class="fi" id="vDef" type="text" placeholder="seeming reasonable or probable"></div>
+      <button class="btn" onclick="addVocab()">+ Add</button>
     </div>
+    <div class="fg" style="margin-top:.8rem"><label class="fl">Example Sentence</label><input class="fi" id="vEx" type="text" placeholder="His explanation was plausible."></div>
+  </div>
+  <div id="cvList" style="margin-top:1rem"></div>
+</div>
 
-    <div style="display:flex;gap:1rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap">
-      <button class="btn ghost" onclick="getPrompt(1)">Part 1</button>
-      <button class="btn ghost" onclick="getPrompt(2)">Part 2</button>
-      <button class="btn ghost" onclick="getPrompt(3)">Part 3</button>
-      <button class="btn" onclick="getRandomPrompt()">🎲 Random Prompt</button>
-    </div>
+<!-- SPEAKING -->
+<div id="page-speaking" class="page">
+  <h2 class="section-title">Speaking Practice</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem">Get a question, record yourself, listen back, improve. Repeat daily.</p>
+  <div class="pcard">
+    <div class="ppart" id="pPart">Click a button below to get a question</div>
+    <div class="ptext" id="pText">—</div>
+    <div class="ptip" id="pTip"><strong>Tip:</strong> Use the AREA method: Answer → Reason → Example → Add more.</div>
+  </div>
+  <div style="display:flex;gap:.8rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap">
+    <button class="btn ghost" onclick="getP(1)">Part 1 — Personal</button>
+    <button class="btn ghost" onclick="getP(2)">Part 2 — Long Turn</button>
+    <button class="btn ghost" onclick="getP(3)">Part 3 — Abstract</button>
+    <button class="btn" onclick="getRP()">🎲 Random</button>
+  </div>
+  <div class="card-form">
+    <div class="sc-title" style="margin-bottom:1rem">Band 8 Self-Assessment Checklist</div>
+    <div id="spkChk"></div>
+  </div>
+  <div class="card-form">
+    <div class="sc-title" style="margin-bottom:1rem">Band 8 Useful Phrases</div>
+    <div class="pgrid" id="phraseGrid"></div>
+  </div>
+</div>
 
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.5rem">
-      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.8px">Band 8 Speaking Checklist</div>
-      <div id="speakingChecklist" style="display:flex;flex-direction:column;gap:0.6rem"></div>
-    </div>
+<!-- ROADMAP -->
+<div id="page-roadmap" class="page">
+  <h2 class="section-title">3-Month Study Roadmap</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem">Click phases to expand. Mark weeks complete — progress saved to database.</p>
+  <div id="rmContent"></div>
+</div>
 
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem">
-      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.8px">Useful Phrases for Speaking Band 8</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;font-size:0.85rem">
-        <div>
-          <div style="color:var(--accent);font-size:0.75rem;text-transform:uppercase;margin-bottom:0.4rem">Giving opinions</div>
-          <div style="color:var(--muted)">• In my view / From my perspective</div>
-          <div style="color:var(--muted)">• I'm inclined to think that...</div>
-          <div style="color:var(--muted)">• There's a strong case for...</div>
-          <div style="color:var(--muted)">• It strikes me that...</div>
-        </div>
-        <div>
-          <div style="color:var(--accent);font-size:0.75rem;text-transform:uppercase;margin-bottom:0.4rem">Hedging / Softening</div>
-          <div style="color:var(--muted)">• It's quite difficult to generalise, but...</div>
-          <div style="color:var(--muted)">• To a certain extent...</div>
-          <div style="color:var(--muted)">• It depends on the context...</div>
-          <div style="color:var(--muted)">• Generally speaking...</div>
-        </div>
-        <div style="margin-top:0.6rem">
-          <div style="color:var(--accent);font-size:0.75rem;text-transform:uppercase;margin-bottom:0.4rem">Adding points</div>
-          <div style="color:var(--muted)">• Furthermore / What's more...</div>
-          <div style="color:var(--muted)">• Not only that, but also...</div>
-          <div style="color:var(--muted)">• Another aspect worth considering...</div>
-          <div style="color:var(--muted)">• Building on that point...</div>
-        </div>
-        <div style="margin-top:0.6rem">
-          <div style="color:var(--accent);font-size:0.75rem;text-transform:uppercase;margin-bottom:0.4rem">Contrasting</div>
-          <div style="color:var(--muted)">• That said / Having said that...</div>
-          <div style="color:var(--muted)">• On the other hand...</div>
-          <div style="color:var(--muted)">• Nevertheless / Nonetheless...</div>
-          <div style="color:var(--muted)">• Despite this, I would argue...</div>
-        </div>
+<!-- SETTINGS -->
+<div id="page-settings" class="page">
+  <h2 class="section-title">Settings & Data Management</h2>
+  <div class="two-col" style="margin-bottom:1.5rem">
+    <div class="sc"><div class="sc-title">Database Status</div><div id="dbInfo" style="font-size:.88rem;color:var(--muted);line-height:2.2"></div></div>
+    <div class="sc">
+      <div class="sc-title">Export / Import</div>
+      <div style="display:flex;flex-direction:column;gap:.8rem;margin-top:.5rem">
+        <button class="btn" onclick="exportAll()">📤 Export All Data (.json)</button>
+        <div><label class="fl" style="display:block;margin-bottom:.4rem">Import from backup</label><input type="file" id="importFile" accept=".json" onchange="importAll(event)" style="color:var(--muted);font-size:.85rem;width:100%"></div>
       </div>
     </div>
   </div>
-
-  <!-- ROADMAP PAGE -->
-  <div id="page-roadmap" class="page">
-    <h2 class="section-title">3-Month Study Roadmap</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.5rem">Click any phase to expand the weekly schedule. Tick off weeks as you complete them.</p>
-
-    <div id="roadmapContent"></div>
+  <div class="sc" style="margin-bottom:1.5rem">
+    <div class="sc-title">Preferences</div>
+    <div class="fg3" style="margin-top:.8rem">
+      <div class="fg"><label class="fl">Your Name</label><input class="fi" id="setName" type="text" placeholder="Your name"></div>
+      <div class="fg"><label class="fl">Target Exam Date</label><input class="fi" id="setExam" type="date"></div>
+      <button class="btn" onclick="saveSettings()">Save</button>
+    </div>
+    <div id="countdown" style="margin-top:1rem;font-size:.95rem;color:var(--gold);font-weight:600"></div>
   </div>
+  <div class="sc" style="border-color:rgba(255,90,90,.3)">
+    <div class="sc-title" style="color:var(--red)">Danger Zone</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Export data first before using these.</p>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+      <button class="btn danger sm" onclick="clrStore('tasks')">Clear Tasks</button>
+      <button class="btn danger sm" onclick="clrStore('scores')">Clear Scores</button>
+      <button class="btn danger sm" onclick="clrStore('errors')">Clear Errors</button>
+      <button class="btn danger sm" onclick="clrStore('customVocab')">Clear Custom Vocab</button>
+      <button class="btn danger" onclick="clrAll()">⚠️ Reset Everything</button>
+    </div>
+  </div>
+</div>
 
 </main>
 
 <script>
-// ===================== DATA STORE =====================
-const store = {
-  tasks: [], errors: [], scores: [],
-  customVocab: [],
-  roadmapWeeks: {},
-  get(k) { try { return JSON.parse(localStorage.getItem('ielts_'+k) || '[]'); } catch { return []; } },
-  set(k, v) { localStorage.setItem('ielts_'+k, JSON.stringify(v)); },
-  load() {
-    this.tasks = this.get('tasks');
-    this.errors = this.get('errors');
-    this.scores = this.get('scores');
-    this.customVocab = this.get('customVocab');
-    this.roadmapWeeks = JSON.parse(localStorage.getItem('ielts_roadmapWeeks') || '{}');
-  },
-  save() {
-    this.set('tasks', this.tasks);
-    this.set('errors', this.errors);
-    this.set('scores', this.scores);
-    this.set('customVocab', this.customVocab);
-    localStorage.setItem('ielts_roadmapWeeks', JSON.stringify(this.roadmapWeeks));
-  }
-};
+/* =====================================================
+   INDEXEDDB ENGINE
+   Database: IELTSBand8DB  |  Version: 1
+   Object Stores: tasks, scores, errors, customVocab,
+                  vocabStatus, roadmapProgress, settings
+===================================================== */
+const DB_NAME = 'IELTSBand8DB', DB_VER = 1;
+let db;
 
-// ===================== VOCAB DATA =====================
-const AWL_CARDS = [
-  { word: 'analyse', pos: 'verb', def: 'To examine something in detail in order to understand it or explain it.', ex: '"Researchers need to analyse the data carefully before drawing conclusions."' },
-  { word: 'approach', pos: 'noun/verb', def: 'A way of dealing with something; OR to come near to something.', ex: '"The government adopted a new approach to tackling unemployment."' },
-  { word: 'assess', pos: 'verb', def: 'To judge the quality, importance, or value of something.', ex: '"Students are assessed on their ability to communicate ideas clearly."' },
-  { word: 'assume', pos: 'verb', def: 'To believe something is true without proof.', ex: '"We cannot assume that all readers share the same background knowledge."' },
-  { word: 'authority', pos: 'noun', def: 'The power or right to make decisions; an expert in a field.', ex: '"The government has the authority to regulate carbon emissions."' },
-  { word: 'benefit', pos: 'noun/verb', def: 'An advantage or profit gained from something.', ex: '"The primary benefit of exercise is improved mental health."' },
-  { word: 'concept', pos: 'noun', def: 'An idea or principle, especially an abstract one.', ex: '"The concept of sustainable development was first introduced in 1987."' },
-  { word: 'constitute', pos: 'verb', def: 'To form or make up; to be considered as.', ex: '"Deforestation constitutes one of the greatest threats to biodiversity."' },
-  { word: 'context', pos: 'noun', def: 'The circumstances or background that help explain something.', ex: '"This statistic must be understood in the context of rapid urbanisation."' },
-  { word: 'derive', pos: 'verb', def: 'To obtain something from a source.', ex: '"The data for this study was derived from three independent surveys."' },
-  { word: 'environment', pos: 'noun', def: 'The natural world; OR the conditions in which something operates.', ex: '"Industrial pollution poses a serious threat to the natural environment."' },
-  { word: 'establish', pos: 'verb', def: 'To set up; to show that something is definitely true.', ex: '"It has been firmly established that sleep deprivation harms cognitive function."' },
-  { word: 'significant', pos: 'adjective', def: 'Large enough to be important or have a noticeable effect.', ex: '"There was a significant rise in online learning during the pandemic."' },
-  { word: 'policy', pos: 'noun', def: 'A plan of action adopted by a government, organization or individual.', ex: '"The government's energy policy aims to reduce carbon emissions by 50% by 2030."' },
-  { word: 'complex', pos: 'adjective', def: 'Made of many different but connected parts; difficult to understand.', ex: '"The causes of poverty are complex and cannot be attributed to a single factor."' },
-  { word: 'consequence', pos: 'noun', def: 'A result or effect of an action or condition.', ex: '"One of the most serious consequences of climate change is rising sea levels."' },
-  { word: 'contribute', pos: 'verb', def: 'To give something (time, money, effort) to help something succeed.', ex: '"Multiple factors contribute to the rising cost of healthcare."' },
-  { word: 'controversy', pos: 'noun', def: 'A prolonged public disagreement or heated discussion.', ex: '"The use of genetic engineering in agriculture remains a source of controversy."' },
-  { word: 'demonstrate', pos: 'verb', def: 'To show clearly that something exists or is true.', ex: '"Recent studies demonstrate a strong link between diet and cognitive performance."' },
-  { word: 'dominant', pos: 'adjective', def: 'Most important, powerful, or influential.', ex: '"English has become the dominant language of international business and science."' },
-  { word: 'economy', pos: 'noun', def: 'The system of money and trade in a country; careful management of resources.', ex: '"A growing economy does not always lead to improvements in public wellbeing."' },
-  { word: 'emphasis', pos: 'noun', def: 'Special importance given to something.', ex: '"There is growing emphasis on mental health awareness in educational institutions."' },
-  { word: 'enhance', pos: 'verb', def: 'To improve the quality, value, or extent of something.', ex: '"Technology can greatly enhance the learning experience when used appropriately."' },
-  { word: 'factor', pos: 'noun', def: 'A circumstance, fact, or influence that contributes to a result.', ex: '"Social media is often cited as a contributing factor to anxiety in young people."' },
-  { word: 'framework', pos: 'noun', def: 'A basic structure underlying a system or concept.', ex: '"The new legislation provides a legal framework for environmental protection."' },
-  { word: 'generate', pos: 'verb', def: 'To produce or create something.', ex: '"Renewable energy sources generate electricity without producing greenhouse gases."' },
-  { word: 'implement', pos: 'verb', def: 'To put a plan, decision, or agreement into effect.', ex: '"Governments must implement stricter measures to combat air pollution."' },
-  { word: 'indicate', pos: 'verb', def: 'To point to or show that something is likely; to be a sign of.', ex: '"These figures indicate a steady decline in literacy rates over the past decade."' },
-  { word: 'impact', pos: 'noun/verb', def: 'A powerful effect; to have a strong effect on something.', ex: '"Urbanisation has had a profound impact on traditional family structures."' },
-  { word: 'maintain', pos: 'verb', def: 'To keep in good condition; to continue having something; to state as fact.', ex: '"It is difficult to maintain a healthy work-life balance in modern society."' },
-  { word: 'major', pos: 'adjective', def: 'Important, serious, or significant.', ex: '"Air pollution is a major cause of respiratory illness in urban areas."' },
-  { word: 'perceive', pos: 'verb', def: 'To become aware of; to regard or interpret in a particular way.', ex: '"Success is often perceived differently across different cultures."' },
-  { word: 'potential', pos: 'adjective/noun', def: 'Having or showing the capacity to develop into something in the future.', ex: '"Renewable energy has enormous potential to transform the global energy system."' },
-  { word: 'principle', pos: 'noun', def: 'A fundamental truth or rule serving as a basis for belief or action.', ex: '"The principle of equality underpins many modern legal systems."' },
-  { word: 'require', pos: 'verb', def: 'To need something for a particular purpose; to make something obligatory.', ex: '"High-performance athletes require structured rest periods to prevent burnout."' },
-  { word: 'restrict', pos: 'verb', def: 'To limit something; to keep it within specific bounds.', ex: '"Some governments choose to restrict access to social media platforms."' },
-  { word: 'role', pos: 'noun', def: 'The function or position someone or something has in a situation.', ex: '"Technology plays an increasingly central role in modern education."' },
-  { word: 'sector', pos: 'noun', def: 'A distinct part of an economy, society, or sphere of activity.', ex: '"Investment in the public sector has declined significantly over the past twenty years."' },
-  { word: 'sustainable', pos: 'adjective', def: 'Able to be maintained at a certain level without damaging natural resources.', ex: '"Sustainable agriculture uses farming techniques that protect long-term soil health."' },
-  { word: 'trend', pos: 'noun', def: 'A general direction in which something is changing or developing.', ex: '"There is a clear upward trend in the number of people working remotely."' },
-];
-
-// ===================== SPEAKING PROMPTS =====================
-const SPEAKING_PROMPTS = {
-  1: [
-    { q: "Do you prefer to spend time alone or with other people? Why?", tip: "Give a clear preference. Add a reason and a short example from your life." },
-    { q: "What kind of music do you enjoy listening to?", tip: "Don't just name a genre. Describe how it makes you feel and when you listen to it." },
-    { q: "Do you think it's important to learn about history? Why or why not?", tip: "Give a yes/no answer first, then develop with 1–2 reasons." },
-    { q: "How do you usually spend your weekends?", tip: "Use present simple for habits. Try to include one specific, vivid detail." },
-    { q: "Are there any languages you would like to learn in the future?", tip: "Show enthusiasm. Mention a specific reason — travel, culture, career." },
-    { q: "Do you prefer to read news online or in a newspaper?", tip: "Compare the two formats. Give a reason for your preference." },
-    { q: "How important is cooking as a skill for young people today?", tip: "Give your view clearly. Use 'I think... because...' to structure it." },
-  ],
-  2: [
-    { q: "Describe a time when you had to solve a difficult problem.\n\nYou should say:\n— What the problem was\n— What made it difficult\n— How you eventually solved it\n— How you felt after solving it", tip: "Spend 1 minute planning (who, where, what, why). Use past tense and show emotion in your storytelling." },
-    { q: "Describe a person in your life who has had a positive influence on you.\n\nYou should say:\n— Who this person is\n— How you know them\n— What qualities they have\n— How they have influenced you", tip: "Use vivid description. Don't just list qualities — show them with examples." },
-    { q: "Describe a book or film that you found particularly interesting.\n\nYou should say:\n— What it was about\n— When you read/watched it\n— Why it was interesting\n— Whether you would recommend it to others", tip: "Focus on WHY it affected you. Your personal reaction is what makes the answer rich." },
-    { q: "Describe a memorable journey or trip you have taken.\n\nYou should say:\n— Where you went\n— Who you went with\n— What happened during the trip\n— Why it was memorable", tip: "Use sensory details — what you saw, heard, felt. Make the examiner feel like they were there." },
-  ],
-  3: [
-    { q: "Do you think governments should invest more money in space exploration, or should they focus on problems on Earth?", tip: "Use the depth ladder: surface answer → reason → example → societal level. Show balanced thinking then give your view." },
-    { q: "How has technology changed the way people communicate with each other?", tip: "Compare past vs present. Acknowledge both positive and negative changes." },
-    { q: "Some people argue that environmental problems are too serious to be solved by individuals — it requires government action. What do you think?", tip: "This is a nuanced question. Acknowledge both sides before giving your view." },
-    { q: "Is it more important for children to study academic subjects or to develop social skills?", tip: "Don't just say 'both are important.' Argue for one and explain why, while acknowledging the other." },
-    { q: "Do you think that economic growth always leads to improvements in quality of life?", tip: "Give a qualified answer — 'Not necessarily' or 'It depends on...' — then explain with examples." },
-    { q: "How might the way people work change in the next 20 years?", tip: "Speculate using future forms: 'I think it's likely that... / We could see a situation where...' Show awareness of technology and society." },
-  ]
-};
-
-// ===================== QUOTES =====================
-const QUOTES = [
-  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
-  { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
-  { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
-  { text: "The more that you read, the more things you will know.", author: "Dr. Seuss" },
-  { text: "Every mistake is an opportunity to learn something new.", author: "IELTS Wisdom" },
-  { text: "Fluency comes from comfort, and comfort comes from practice.", author: "Language Learning Principle" },
-  { text: "Your Band 8 is already inside you — your job is to bring it out.", author: "Your Future Self" },
-  { text: "Study not to know more, but to be more.", author: "Anonymous" },
-];
-
-// ===================== NAVIGATION =====================
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  event.target.classList.add('active');
-  if (name === 'dashboard') updateDashboard();
-  if (name === 'scores') renderScores();
-  if (name === 'errors') renderErrors('all');
-  if (name === 'vocab') renderVocab();
-  if (name === 'roadmap') renderRoadmap();
-  if (name === 'speaking') renderSpeakingPage();
-  if (name === 'tasks') renderTasks('all');
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, DB_VER);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      [
+        ['tasks',       {autoIncrement:true}],
+        ['scores',      {autoIncrement:true}],
+        ['errors',      {autoIncrement:true}],
+        ['customVocab', {autoIncrement:true}],
+        ['vocabStatus', {keyPath:'word'}],
+        ['roadmapProgress', {keyPath:'key'}],
+        ['settings',    {keyPath:'key'}],
+      ].forEach(([name, opts]) => {
+        if (!d.objectStoreNames.contains(name))
+          d.createObjectStore(name, {keyPath:'id', ...opts});
+      });
+    };
+    r.onsuccess = e => { db = e.target.result; res(db); };
+    r.onerror = e => rej(e.target.error);
+  });
 }
 
-// ===================== UTILS =====================
-function today() { return new Date().toISOString().split('T')[0]; }
-function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
-function bandColor(b) {
-  if (!b || isNaN(b)) return '';
-  if (b >= 7.5) return 'high';
-  if (b >= 6.5) return 'mid';
-  return 'low';
+const tx  = (s, m='readonly') => db.transaction(s, m).objectStore(s);
+const all = s => new Promise((res,rej) => { const r=tx(s).getAll(); r.onsuccess=e=>res(e.target.result); r.onerror=e=>rej(e.target.error); });
+const get = (s,k) => new Promise((res,rej) => { const r=tx(s).get(k); r.onsuccess=e=>res(e.target.result); r.onerror=e=>rej(e.target.error); });
+const add = (s,d) => new Promise((res,rej) => { const r=tx(s,'readwrite').add(d); r.onsuccess=e=>res(e.target.result); r.onerror=e=>rej(e.target.error); });
+const put = (s,d) => new Promise((res,rej) => { const r=tx(s,'readwrite').put(d); r.onsuccess=e=>res(e.target.result); r.onerror=e=>rej(e.target.error); });
+const del = (s,k) => new Promise((res,rej) => { const r=tx(s,'readwrite').delete(k); r.onsuccess=()=>res(); r.onerror=e=>rej(e.target.error); });
+const clr = s   => new Promise((res,rej) => { const r=tx(s,'readwrite').clear(); r.onsuccess=()=>res(); r.onerror=e=>rej(e.target.error); });
+
+/* ===== TOAST ===== */
+let tTimer;
+function toast(msg, type='ok') {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='show '+type;
+  clearTimeout(tTimer); tTimer=setTimeout(()=>{el.className='';},2800);
 }
 
-// ===================== DASHBOARD =====================
-function updateDashboard() {
-  // Date
-  document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+/* ===== UTILS ===== */
+const td  = () => new Date().toISOString().split('T')[0];
+const fmt = d => { if(!d) return '—'; try{ return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); } catch{ return d; } };
+const bc  = b => (!b||isNaN(b))?'':b>=7.5?'high':b>=6.5?'mid':'low';
+const ov  = (l,r,w,s) => Math.round(((+l+ +r+ +w+ +s)/4)*2)/2;
 
-  // Quote
-  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-  document.getElementById('quoteText').textContent = '"' + q.text + '"';
-  document.querySelector('.quote-author').textContent = '— ' + q.author;
+/* ===== NAV ===== */
+let curPage = 'dashboard';
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = btn.dataset.p;
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+    document.getElementById('page-'+p).classList.add('active');
+    btn.classList.add('active');
+    curPage = p;
+    if(p==='dashboard') loadDash();
+    if(p==='tasks')    loadTasks();
+    if(p==='scores')   loadScores();
+    if(p==='errors')   loadErrors();
+    if(p==='vocab')    loadVocab();
+    if(p==='roadmap')  loadRoadmap();
+    if(p==='settings') loadSettings();
+    if(p==='speaking') initSpeak();
+  });
+});
 
-  // Latest scores
-  const scores = store.scores;
-  let latest = {l:'—',r:'—',w:'—',s:'—'};
-  if (scores.length > 0) {
-    const last = scores[scores.length - 1];
-    latest = { l: last.listen, r: last.read, w: last.write, s: last.speak };
+/* ===================================================
+   DASHBOARD
+=================================================== */
+const QUOTES=[
+  {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {t:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},
+  {t:"Success is the sum of small efforts, repeated day in and day out.",a:"Robert Collier"},
+  {t:"Every mistake is an opportunity to learn something new.",a:"IELTS Wisdom"},
+  {t:"Fluency comes from comfort, and comfort comes from practice.",a:"Language Principle"},
+  {t:"Your Band 8 is already inside you — your job is to bring it out.",a:"Your Future Self"},
+  {t:"Study not to know more, but to be more.",a:"Anonymous"},
+  {t:"The more that you read, the more things you will know.",a:"Dr. Seuss"},
+];
+
+async function loadDash() {
+  document.getElementById('hDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('qtext').textContent='"'+q.t+'"';
+  document.getElementById('qauth').textContent='— '+q.a;
+
+  const scores = (await all('scores')).sort((a,b)=>a.id-b.id);
+  if(scores.length>0){
+    const ls=scores[scores.length-1];
+    document.getElementById('dL').textContent=ls.listen;
+    document.getElementById('dR').textContent=ls.read;
+    document.getElementById('dW').textContent=ls.write;
+    document.getElementById('dS').textContent=ls.speak;
+    const targets={L:8,R:8,W:7.5,S:8};
+    [['L','listen'],['R','read'],['W','write'],['S','speak']].forEach(([k,field])=>{
+      const v=parseFloat(ls[field])||0;
+      document.getElementById('pb'+k).style.width=Math.min(100,(v/targets[k])*100)+'%';
+      document.getElementById('pv'+k).textContent=ls[field]||'—';
+    });
   }
-  document.getElementById('dashListen').textContent = latest.l;
-  document.getElementById('dashRead').textContent = latest.r;
-  document.getElementById('dashWrite').textContent = latest.w;
-  document.getElementById('dashSpeak').textContent = latest.s;
 
-  // Progress bars
-  function setPBar(id, valId, val) {
-    const pct = val && !isNaN(val) ? Math.min(100, (parseFloat(val) / 8.0) * 100) : 0;
-    document.getElementById(id).style.width = pct + '%';
-    document.getElementById(valId).textContent = val && !isNaN(val) ? val : '—';
-  }
-  setPBar('pListen','pListenVal', latest.l);
-  setPBar('pRead','pReadVal', latest.r);
-  setPBar('pWrite','pWriteVal', latest.w);
-  setPBar('pSpeak','pSpeakVal', latest.s);
-
-  // Week grid
-  const wg = document.getElementById('weekGrid');
-  wg.innerHTML = '';
-  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(now); d.setDate(now.getDate() + mondayOffset + i);
-    const ds = d.toISOString().split('T')[0];
-    const isToday = ds === today();
-    const tasksForDay = store.tasks.filter(t => t.date === ds);
-    const doneForDay = tasksForDay.filter(t => t.done).length;
-    const completed = tasksForDay.length > 0 && doneForDay === tasksForDay.length;
-    const div = document.createElement('div');
-    div.className = 'day-card' + (isToday ? ' today' : '') + (completed ? ' completed' : '');
-    div.innerHTML = `<div class="day-name">${days[i]}</div><div class="day-num">${d.getDate()}</div><div class="day-tasks">${tasksForDay.length > 0 ? doneForDay+'/'+tasksForDay.length+' tasks' : 'No tasks'}</div>`;
+  const tasks = await all('tasks');
+  const wg=document.getElementById('weekGrid'); wg.innerHTML='';
+  const now=new Date(), dow=now.getDay(), mo=dow===0?-6:1-dow;
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  for(let i=0;i<7;i++){
+    const d=new Date(now); d.setDate(now.getDate()+mo+i);
+    const ds=d.toISOString().split('T')[0];
+    const dt=tasks.filter(t=>t.date===ds);
+    const dn=dt.filter(t=>t.done).length;
+    const div=document.createElement('div');
+    div.className='day-card'+(ds===td()?' today':'')+(dt.length>0&&dn===dt.length?' completed':'');
+    div.innerHTML=`<div class="day-name">${days[i]}</div><div class="day-num">${d.getDate()}</div><div class="day-tasks">${dt.length>0?dn+'/'+dt.length+' tasks':'No tasks'}</div>`;
     wg.appendChild(div);
   }
 
-  // Today's tasks
-  const todayTasks = store.tasks.filter(t => t.date === today());
-  const doneTodayCount = todayTasks.filter(t => t.done).length;
-  document.getElementById('todayTasks').textContent = doneTodayCount;
-  document.getElementById('todayTotal').textContent = 'of ' + todayTasks.length + ' tasks';
-  document.getElementById('totalErrors').textContent = store.errors.length;
+  const todayT=tasks.filter(t=>t.date===td());
+  document.getElementById('dTasks').textContent=todayT.filter(t=>t.done).length;
+  document.getElementById('dTasksOf').textContent='of '+todayT.length+' tasks';
+  document.getElementById('dErrors').textContent=(await all('errors')).length;
 }
 
-// ===================== TASKS =====================
-function addTask() {
-  const text = document.getElementById('taskInput').value.trim();
-  const section = document.getElementById('taskSection').value;
-  const date = document.getElementById('taskDate').value || today();
-  if (!text) return;
-  store.tasks.push({ id: Date.now(), text, section, date, done: false });
-  store.save();
-  document.getElementById('taskInput').value = '';
-  renderTasks('all');
+/* ===================================================
+   TASKS
+=================================================== */
+let tFilter='all';
+function setTF(f){tFilter=f;loadTasks();}
+
+async function addTask(){
+  const text=document.getElementById('tIn').value.trim();
+  if(!text){toast('Please enter a task description.','er');return;}
+  const sec=document.getElementById('tSec').value;
+  const date=document.getElementById('tDate').value||td();
+  await add('tasks',{text,section:sec,date,done:false,createdAt:Date.now()});
+  document.getElementById('tIn').value='';
+  toast('Task added! ✓');
+  loadTasks();
+  if(curPage==='dashboard') loadDash();
 }
 
-function toggleTask(id) {
-  const t = store.tasks.find(t => t.id === id);
-  if (t) { t.done = !t.done; store.save(); renderTasks(currentFilter); }
+async function toggleTask(id){
+  const t=await get('tasks',id); if(!t) return;
+  t.done=!t.done; await put('tasks',t);
+  loadTasks();
+  if(curPage==='dashboard') loadDash();
 }
 
-function deleteTask(id) {
-  store.tasks = store.tasks.filter(t => t.id !== id);
-  store.save(); renderTasks(currentFilter);
+async function delTask(id){
+  await del('tasks',id);
+  toast('Task deleted.','er');
+  loadTasks();
+  if(curPage==='dashboard') loadDash();
 }
 
-function clearCompletedTasks() {
-  store.tasks = store.tasks.filter(t => !t.done);
-  store.save(); renderTasks(currentFilter);
+async function clearDone(){
+  const ts=await all('tasks');
+  const done=ts.filter(t=>t.done);
+  await Promise.all(done.map(t=>del('tasks',t.id)));
+  toast(`Cleared ${done.length} completed tasks.`);
+  loadTasks();
 }
 
-let currentFilter = 'all';
-function filterTasks(f) { currentFilter = f; renderTasks(f); }
+async function loadTasks(){
+  let ts=await all('tasks');
+  ts.sort((a,b)=>a.date>b.date?1:-1);
 
-function renderTasks(filter) {
-  currentFilter = filter;
-  const list = document.getElementById('taskList');
-  let tasks = store.tasks;
-  if (filter !== 'all') tasks = tasks.filter(t => t.section === filter);
-  tasks = tasks.sort((a, b) => (a.date > b.date ? 1 : -1));
-
-  // Streak
-  let streak = 0;
-  const d = new Date();
-  while (true) {
-    const ds = d.toISOString().split('T')[0];
-    const dayTasks = store.tasks.filter(t => t.date === ds);
-    if (dayTasks.length > 0 && dayTasks.every(t => t.done)) { streak++; d.setDate(d.getDate() - 1); }
-    else break;
+  // Streak calc
+  let streak=0; const d=new Date();
+  while(true){
+    const ds=d.toISOString().split('T')[0];
+    const dt=ts.filter(x=>x.date===ds);
+    if(dt.length>0&&dt.every(x=>x.done)){streak++;d.setDate(d.getDate()-1);}else break;
   }
-  const se = document.getElementById('streakCount');
-  if (se) se.textContent = streak + ' day streak';
+  document.getElementById('streakTxt').textContent=streak+' day streak';
 
-  if (tasks.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div>No tasks here yet.</div>';
-    return;
-  }
-  list.innerHTML = tasks.map(t => `
-    <div class="task-item ${t.done ? 'done' : ''}">
-      <div class="task-check" onclick="toggleTask(${t.id})">${t.done ? '✓' : ''}</div>
-      <div style="flex:1">
-        <div class="task-text">${t.text}</div>
-        <div style="font-size:0.74rem;color:var(--muted);margin-top:0.2rem">${fmtDate(t.date)}</div>
+  if(tFilter!=='all') ts=ts.filter(t=>t.section===tFilter);
+  const el=document.getElementById('taskList');
+  if(!ts.length){el.innerHTML='<div class="empty"><div class="eic">✅</div>No tasks here yet.</div>';return;}
+  el.innerHTML=ts.map(t=>`
+    <div class="task-item ${t.done?'done':''}">
+      <div class="tchk" onclick="toggleTask(${t.id})">${t.done?'✓':''}</div>
+      <div style="flex:1;min-width:0">
+        <div class="ttext">${t.text}</div>
+        <div class="tdate">${fmt(t.date)}</div>
       </div>
-      <span class="task-tag ${t.section}">${t.section}</span>
-      <button class="task-del" onclick="deleteTask(${t.id})">✕</button>
-    </div>
-  `).join('');
+      <span class="ttag ${t.section}">${t.section}</span>
+      <button class="tdel" onclick="delTask(${t.id})">✕</button>
+    </div>`).join('');
 }
 
-// ===================== SCORES =====================
-function addScore() {
-  const date = document.getElementById('scoreDate').value || today();
-  const listen = parseFloat(document.getElementById('scoreListen').value);
-  const read = parseFloat(document.getElementById('scoreRead').value);
-  const write = parseFloat(document.getElementById('scoreWrite').value);
-  const speak = parseFloat(document.getElementById('scoreSpeak').value);
-  const name = document.getElementById('scoreName').value || 'Mock #' + (store.scores.length + 1);
-  if (isNaN(listen) || isNaN(read) || isNaN(write) || isNaN(speak)) { alert('Please enter all four band scores.'); return; }
-  const overall = Math.round(((listen + read + write + speak) / 4) * 2) / 2;
-  store.scores.push({ id: Date.now(), date, listen, read, write, speak, overall, name });
-  store.save();
-  ['scoreListen','scoreRead','scoreWrite','scoreSpeak','scoreName'].forEach(id => document.getElementById(id).value = '');
-  renderScores();
+/* ===================================================
+   SCORES
+=================================================== */
+async function addScore(){
+  const date=document.getElementById('scDate').value||td();
+  const l=parseFloat(document.getElementById('scL').value);
+  const r=parseFloat(document.getElementById('scR').value);
+  const w=parseFloat(document.getElementById('scW').value);
+  const s=parseFloat(document.getElementById('scS').value);
+  const name=document.getElementById('scName').value.trim();
+  if([l,r,w,s].some(isNaN)){toast('Enter all four band scores.','er');return;}
+  if([l,r,w,s].some(v=>v<0||v>9)){toast('Scores must be 0–9.','er');return;}
+  const overall=ov(l,r,w,s);
+  await add('scores',{date,listen:l,read:r,write:w,speak:s,overall,name:name||'Mock Test',createdAt:Date.now()});
+  ['scL','scR','scW','scS','scName'].forEach(id=>document.getElementById(id).value='');
+  toast(`Score saved! Overall: ${overall} 🎯`);
+  loadScores();
 }
 
-function deleteScore(id) {
-  store.scores = store.scores.filter(s => s.id !== id);
-  store.save(); renderScores();
+async function delScore(id){
+  await del('scores',id);
+  toast('Score deleted.','er');
+  loadScores();
 }
 
-function renderScores() {
-  const tbody = document.getElementById('scoresTableBody');
-  if (store.scores.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="padding:2rem">No mock tests logged yet</td></tr>';
-    document.getElementById('scoreChart').innerHTML = '<div style="color:var(--muted);font-size:0.82rem;text-align:center;width:100%;padding-top:20px">No scores logged yet</div>';
-    document.getElementById('bestBand').textContent = '—';
-    document.getElementById('latestBand').textContent = '—';
-    document.getElementById('improvement').textContent = '—';
+async function loadScores(){
+  let sc=await all('scores');
+  sc.sort((a,b)=>a.id-b.id);
+  const tbody=document.getElementById('scBody');
+  if(!sc.length){
+    tbody.innerHTML='<tr><td colspan="8" class="empty" style="padding:2rem">No mock tests logged yet</td></tr>';
+    document.getElementById('scChart').innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;width:100%;padding-top:20px">No scores yet</div>';
+    ['scBest','scLatest'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('scImprove').textContent='—';
+    document.getElementById('scCount').textContent='0';
     return;
   }
-  tbody.innerHTML = store.scores.map(s => `
+  tbody.innerHTML=sc.slice().reverse().map(s=>`
     <tr>
-      <td>${fmtDate(s.date)}</td>
-      <td>${s.name}</td>
-      <td class="band-chip ${bandColor(s.listen)}">${s.listen}</td>
-      <td class="band-chip ${bandColor(s.read)}">${s.read}</td>
-      <td class="band-chip ${bandColor(s.write)}">${s.write}</td>
-      <td class="band-chip ${bandColor(s.speak)}">${s.speak}</td>
-      <td class="band-chip ${bandColor(s.overall)}" style="font-size:1.1rem">${s.overall}</td>
-      <td><button class="btn danger sm" onclick="deleteScore(${s.id})">✕</button></td>
-    </tr>
-  `).join('');
+      <td>${fmt(s.date)}</td><td>${s.name}</td>
+      <td class="bc ${bc(s.listen)}">${s.listen}</td>
+      <td class="bc ${bc(s.read)}">${s.read}</td>
+      <td class="bc ${bc(s.write)}">${s.write}</td>
+      <td class="bc ${bc(s.speak)}">${s.speak}</td>
+      <td class="bc ${bc(s.overall)}" style="font-size:1.1rem">${s.overall}</td>
+      <td><button class="btn danger sm" onclick="delScore(${s.id})">✕</button></td>
+    </tr>`).join('');
 
-  // Chart
-  const chart = document.getElementById('scoreChart');
-  const max = 9;
-  const colors = ['#5b7fff','#3ecf8e','#f0c040','#ff7c5f','#a855f7','#06b6d4'];
-  chart.innerHTML = store.scores.slice(-8).map((s, i) => {
-    const h = Math.round((s.overall / max) * 70);
-    return `<div class="chart-bar" data-val="${s.overall}" style="background:${colors[i%colors.length]};height:${h}px"></div>`;
+  const colors=['#5b7fff','#3ecf8e','#f0c040','#ff7c5f','#a855f7','#06b6d4','#f97316','#ec4899'];
+  document.getElementById('scChart').innerHTML=sc.slice(-8).map((s,i)=>{
+    const h=Math.max(4,Math.round((s.overall/9)*70));
+    return `<div class="cbar" data-val="${s.overall}" style="background:${colors[i%colors.length]};height:${h}px" title="${s.name}: ${s.overall}"></div>`;
   }).join('');
 
-  const overalls = store.scores.map(s => s.overall);
-  const best = Math.max(...overalls);
-  const latest = overalls[overalls.length - 1];
-  const first = overalls[0];
-  const diff = latest - first;
-  document.getElementById('bestBand').textContent = best;
-  document.getElementById('latestBand').textContent = latest;
-  document.getElementById('improvement').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1);
-  document.getElementById('improvement').style.color = diff >= 0 ? 'var(--green)' : 'var(--red)';
-
-  // Update dashboard scores
-  if (store.scores.length > 0) {
-    const last = store.scores[store.scores.length - 1];
-    ['Listen','Read','Write','Speak'].forEach(k => {
-      const el = document.getElementById('dash'+k);
-      if (el) el.textContent = last[k.toLowerCase()];
-    });
-  }
+  const ovs=sc.map(s=>s.overall);
+  const best=Math.max(...ovs), latest=ovs[ovs.length-1], diff=+(latest-ovs[0]).toFixed(1);
+  document.getElementById('scBest').textContent=best;
+  document.getElementById('scLatest').textContent=latest;
+  document.getElementById('scImprove').textContent=(diff>=0?'+':'')+diff;
+  document.getElementById('scImprove').style.color=diff>=0?'var(--green)':'var(--red)';
+  document.getElementById('scCount').textContent=sc.length;
 }
 
-// ===================== ERRORS =====================
-function addError() {
-  const section = document.getElementById('errorSection').value;
-  const mistake = document.getElementById('errorMistake').value.trim();
-  const fix = document.getElementById('errorFix').value.trim();
-  if (!mistake) return;
-  store.errors.push({ id: Date.now(), date: today(), section, mistake, fix });
-  store.save();
-  document.getElementById('errorMistake').value = '';
-  document.getElementById('errorFix').value = '';
-  renderErrors('all');
+/* ===================================================
+   ERRORS
+=================================================== */
+let eFilter='all';
+function setEF(f){eFilter=f;loadErrors();}
+
+async function addError(){
+  const sec=document.getElementById('erSec').value;
+  const mis=document.getElementById('erMis').value.trim();
+  const fix=document.getElementById('erFix').value.trim();
+  const note=document.getElementById('erNote').value.trim();
+  if(!mis){toast('Describe the mistake.','er');return;}
+  await add('errors',{section:sec,mistake:mis,fix,note,date:td(),createdAt:Date.now()});
+  document.getElementById('erMis').value='';
+  document.getElementById('erFix').value='';
+  document.getElementById('erNote').value='';
+  toast('Error logged! Keep analyzing. 📝');
+  loadErrors();
 }
 
-function deleteError(id) {
-  store.errors = store.errors.filter(e => e.id !== id);
-  store.save(); renderErrors(currentErrorFilter);
+async function delError(id){
+  await del('errors',id);
+  toast('Error deleted.','er');
+  loadErrors();
 }
 
-let currentErrorFilter = 'all';
-function filterErrors(f) { currentErrorFilter = f; renderErrors(f); }
-
-function renderErrors(filter) {
-  currentErrorFilter = filter;
-  const list = document.getElementById('errorList');
-  let errors = store.errors;
-  if (filter !== 'all') errors = errors.filter(e => e.section === filter);
-  errors = errors.slice().reverse();
-  if (errors.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div>No errors logged for this section.</div>';
-    return;
-  }
-  list.innerHTML = errors.map(e => `
-    <div class="error-item ${e.section}">
-      <div class="error-top">
-        <span class="error-section-badge">${e.section.toUpperCase()}</span>
-        <div style="display:flex;gap:0.7rem;align-items:center">
-          <span class="error-date">${fmtDate(e.date)}</span>
-          <button class="task-del" onclick="deleteError(${e.id})">✕</button>
+async function loadErrors(){
+  let es=await all('errors');
+  es.sort((a,b)=>b.id-a.id);
+  if(eFilter!=='all') es=es.filter(e=>e.section===eFilter);
+  const el=document.getElementById('errList');
+  if(!es.length){el.innerHTML='<div class="empty"><div class="eic">❌</div>No errors for this filter.</div>';return;}
+  el.innerHTML=es.map(e=>`
+    <div class="ei ${e.section}">
+      <div class="etop">
+        <span class="ebadge">${e.section.toUpperCase()}</span>
+        <div style="display:flex;gap:.7rem;align-items:center">
+          <span class="edate">${fmt(e.date)}</span>
+          <button class="tdel" onclick="delError(${e.id})">✕</button>
         </div>
       </div>
-      <div class="error-mistake">✕ ${e.mistake}</div>
-      ${e.fix ? `<div class="error-fix">→ Fix: ${e.fix}</div>` : ''}
-    </div>
-  `).join('');
+      <div class="emistake">✕ ${e.mistake}</div>
+      ${e.fix?`<div class="efix">→ Fix: ${e.fix}</div>`:''}
+      ${e.note?`<div class="enote">📝 ${e.note}</div>`:''}
+    </div>`).join('');
 }
 
-// ===================== VOCAB FLASHCARDS =====================
-let allCards = [];
-let cardIndex = 0;
-let cardFlipped = false;
-
-function buildCards() {
-  allCards = [...AWL_CARDS, ...store.customVocab];
-}
-
-function renderVocab() {
-  buildCards();
-  cardIndex = Math.min(cardIndex, allCards.length - 1);
-  showCard();
-}
-
-function showCard() {
-  cardFlipped = false;
-  document.getElementById('flashcard').classList.remove('flipped');
-  const c = allCards[cardIndex];
-  if (!c) return;
-  document.getElementById('cardWord').textContent = c.word;
-  document.getElementById('cardPos').textContent = c.pos || 'word';
-  document.getElementById('cardDef').textContent = c.def;
-  document.getElementById('cardEx').textContent = c.ex || '';
-  document.getElementById('vocabCounter').textContent = `Card ${cardIndex + 1} of ${allCards.length}`;
-}
-
-function flipCard() {
-  cardFlipped = !cardFlipped;
-  document.getElementById('flashcard').classList.toggle('flipped');
-}
-
-function nextCard() {
-  cardIndex = (cardIndex + 1) % allCards.length;
-  showCard();
-}
-
-function prevCard() {
-  cardIndex = (cardIndex - 1 + allCards.length) % allCards.length;
-  showCard();
-}
-
-function addVocabCard() {
-  const word = document.getElementById('vocabWord').value.trim();
-  const def = document.getElementById('vocabDef').value.trim();
-  const ex = document.getElementById('vocabEx').value.trim();
-  if (!word || !def) return;
-  store.customVocab.push({ word, pos: 'custom', def, ex });
-  store.save();
-  document.getElementById('vocabWord').value = '';
-  document.getElementById('vocabDef').value = '';
-  document.getElementById('vocabEx').value = '';
-  buildCards();
-  cardIndex = allCards.length - 1;
-  showCard();
-}
-
-// ===================== SPEAKING =====================
-function getPrompt(part) {
-  const prompts = SPEAKING_PROMPTS[part];
-  const p = prompts[Math.floor(Math.random() * prompts.length)];
-  document.getElementById('promptPart').textContent = 'PART ' + part + (part===1?' — Personal Questions':part===2?' — Long Turn (2 minutes)':' — Abstract Discussion');
-  document.getElementById('promptText').textContent = p.q;
-  document.getElementById('promptTips').innerHTML = '<strong>Tip:</strong> ' + p.tip;
-}
-
-function getRandomPrompt() {
-  const part = [1,2,3][Math.floor(Math.random()*3)];
-  getPrompt(part);
-}
-
-function renderSpeakingPage() {
-  getRandomPrompt();
-  const checklist = [
-    { item: "Did I answer every part of the question?", done: false },
-    { item: "Did I avoid long pauses (more than 2 seconds)?", done: false },
-    { item: "Did I use at least one less common vocabulary word?", done: false },
-    { item: "Did I use a variety of sentence structures?", done: false },
-    { item: "Was my pronunciation clear and easy to understand?", done: false },
-    { item: "Did I show a personal opinion with supporting reasons?", done: false },
-  ];
-  const cl = document.getElementById('speakingChecklist');
-  cl.innerHTML = checklist.map((c, i) => `
-    <label style="display:flex;align-items:center;gap:0.7rem;cursor:pointer;font-size:0.88rem">
-      <input type="checkbox" style="accent-color:var(--green);width:16px;height:16px"> ${c.item}
-    </label>
-  `).join('');
-}
-
-// ===================== ROADMAP =====================
-const ROADMAP_DATA = [
-  {
-    phase: 1, title: "Foundation", weeks: "Weeks 1–4",
-    goal: "Establish your baseline, fix big weaknesses, build strong study habits.",
-    weeks_data: [
-      { week: 1, title: "Baseline & Orientation", items: ["Take full diagnostic mock test", "Review every wrong answer in detail", "Study all 4 section formats", "Begin daily vocabulary habit"] },
-      { week: 2, title: "Skill Builders Begin", items: ["Predict answers before listening", "Learn skimming vs scanning for Reading", "Write first full Task 2 essay", "Record first Speaking practice session"] },
-      { week: 3, title: "Accuracy & Error Analysis", items: ["Focus on spelling in Listening", "Master True/False/Not Given question type", "Self-assess Writing using band descriptors", "Build topic vocabulary word maps"] },
-      { week: 4, title: "Phase 1 Mock Test", items: ["Full mock test (all 4 sections)", "Compare scores to diagnostic", "Log errors in tracker", "Plan Phase 2 based on weaknesses"] },
-    ]
-  },
-  {
-    phase: 2, title: "Skill Sharpening", weeks: "Weeks 5–8",
-    goal: "Push from Band 7 territory toward Band 7.5–8.0.",
-    weeks_data: [
-      { week: 5, title: "Advanced Listening & Reading", items: ["Practice Sections 3–4 exclusively (hardest)", "Shadow listening technique daily", "Speed reading — reduce time by 2 minutes", "Continue AWL vocabulary study"] },
-      { week: 6, title: "Advanced Writing", items: ["Write 4 Task 2 essays — one per day", "Replace all basic vocabulary", "Practice map and process Task 1", "Natural discourse markers in essays"] },
-      { week: 7, title: "Advanced Speaking", items: ["Storytelling method for Part 2", "Depth ladder for Part 3 answers", "Idiomatic expressions (1–2 per test)", "15 min daily out-loud question practice"] },
-      { week: 8, title: "Phase 2 Mock & Sprint", items: ["Full mock test", "Compare Writing to Band 8 model", "Compare Speaking to Band 8 YouTube sample", "Intensive work on weakest area"] },
-    ]
-  },
-  {
-    phase: 3, title: "Exam Simulation", weeks: "Weeks 9–12",
-    goal: "Simulate exam conditions until it feels completely normal. Peak performance.",
-    weeks_data: [
-      { week: 9, title: "Stamina & Timing", items: ["3 full 3-hour mocks (L+R+W back to back)", "Build concentration endurance", "Simulate exam-day conditions", "Full Speaking mock recordings"] },
-      { week: 10, title: "Vocabulary & Grammar Sprint", items: ["Final topic vocabulary sweep", "Grammar: conditionals, passive, relatives", "Zero grammar errors in writing goal", "Vocabulary in Speaking: natural, not forced"] },
-      { week: 11, title: "Pressure Testing", items: ["Try to finish Reading in 55 min", "Finish Writing with 2 min to proofread", "Give slightly longer Speaking answers", "Mindset and visualization work"] },
-      { week: 12, title: "Final Polish", items: ["Light review only — no new material", "Revisit your biggest mistakes from 11 weeks", "Thursday: complete rest day", "Exam day logistics preparation"] },
-    ]
-  }
+/* ===================================================
+   VOCABULARY
+=================================================== */
+const AWL=[
+  {word:'analyse',pos:'verb',def:'To examine something in detail in order to understand it.',ex:'"Researchers analyse the data carefully before drawing conclusions."'},
+  {word:'approach',pos:'noun/verb',def:'A way of dealing with something; or to come near to something.',ex:'"The government adopted a new approach to tackling unemployment."'},
+  {word:'assess',pos:'verb',def:'To judge the quality, importance, or value of something.',ex:'"Students are assessed on their ability to communicate ideas clearly."'},
+  {word:'assume',pos:'verb',def:'To believe something is true without having proof.',ex:'"We cannot assume that all readers share the same background knowledge."'},
+  {word:'authority',pos:'noun',def:'The power or right to make decisions; an expert in a field.',ex:'"The government has the authority to regulate carbon emissions."'},
+  {word:'benefit',pos:'noun/verb',def:'An advantage or profit gained from something.',ex:'"The primary benefit of regular exercise is improved mental health."'},
+  {word:'concept',pos:'noun',def:'An idea or principle, especially an abstract one.',ex:'"The concept of sustainable development was first introduced in 1987."'},
+  {word:'constitute',pos:'verb',def:'To form or make up; to be considered as something.',ex:'"Deforestation constitutes one of the greatest threats to biodiversity."'},
+  {word:'context',pos:'noun',def:'The circumstances that help explain something.',ex:'"This statistic must be understood in the context of rapid urbanisation."'},
+  {word:'derive',pos:'verb',def:'To obtain something from a source.',ex:'"The data was derived from three independent surveys."'},
+  {word:'environment',pos:'noun',def:'The natural world; or the conditions in which something operates.',ex:'"Industrial pollution poses a serious threat to the natural environment."'},
+  {word:'establish',pos:'verb',def:'To set up; to show that something is definitely true.',ex:'"It has been established that sleep deprivation harms cognitive function."'},
+  {word:'significant',pos:'adjective',def:'Important or large enough to have a noticeable effect.',ex:'"There was a significant rise in online learning during the pandemic."'},
+  {word:'policy',pos:'noun',def:'A plan of action adopted by a government or organisation.',ex:'"The government\'s energy policy aims to reduce carbon emissions by 50%."'},
+  {word:'complex',pos:'adjective',def:'Made of many connected parts; difficult to understand.',ex:'"The causes of poverty are complex and cannot be attributed to one factor."'},
+  {word:'consequence',pos:'noun',def:'A result or effect of an action or condition.',ex:'"One serious consequence of climate change is rising sea levels."'},
+  {word:'contribute',pos:'verb',def:'To give time, effort or ideas to help something succeed.',ex:'"Multiple factors contribute to the rising cost of healthcare."'},
+  {word:'demonstrate',pos:'verb',def:'To show clearly that something exists or is true.',ex:'"Studies demonstrate a strong link between diet and cognitive performance."'},
+  {word:'dominant',pos:'adjective',def:'Most important, powerful, or influential.',ex:'"English has become the dominant language of international science."'},
+  {word:'emphasis',pos:'noun',def:'Special importance given to something.',ex:'"There is growing emphasis on mental health in educational institutions."'},
+  {word:'enhance',pos:'verb',def:'To improve the quality or value of something.',ex:'"Technology can greatly enhance the learning experience."'},
+  {word:'factor',pos:'noun',def:'A circumstance or influence that contributes to a result.',ex:'"Social media is often cited as a factor in youth anxiety."'},
+  {word:'framework',pos:'noun',def:'A basic structure underlying a system or concept.',ex:'"The legislation provides a legal framework for environmental protection."'},
+  {word:'generate',pos:'verb',def:'To produce or create something.',ex:'"Renewable energy generates electricity without greenhouse gases."'},
+  {word:'implement',pos:'verb',def:'To put a plan or decision into effect.',ex:'"Governments must implement stricter measures to combat air pollution."'},
+  {word:'indicate',pos:'verb',def:'To point to or show that something is likely.',ex:'"These figures indicate a steady decline in literacy rates."'},
+  {word:'impact',pos:'noun/verb',def:'A powerful effect on something.',ex:'"Urbanisation has had a profound impact on traditional family structures."'},
+  {word:'maintain',pos:'verb',def:'To keep in good condition; to continue having something.',ex:'"It is difficult to maintain a healthy work-life balance today."'},
+  {word:'perceive',pos:'verb',def:'To become aware of; to regard in a particular way.',ex:'"Success is often perceived differently across different cultures."'},
+  {word:'potential',pos:'adj/noun',def:'Having the capacity to develop into something in the future.',ex:'"Renewable energy has enormous potential to transform global energy systems."'},
+  {word:'principle',pos:'noun',def:'A fundamental truth or rule serving as a basis for action.',ex:'"The principle of equality underpins many modern legal systems."'},
+  {word:'restrict',pos:'verb',def:'To limit something; to keep it within specific bounds.',ex:'"Some governments choose to restrict access to social media platforms."'},
+  {word:'role',pos:'noun',def:'The function or position something has in a situation.',ex:'"Technology plays an increasingly central role in modern education."'},
+  {word:'sector',pos:'noun',def:'A distinct part of an economy or society.',ex:'"Investment in the public sector has declined significantly."'},
+  {word:'sustainable',pos:'adjective',def:'Able to be maintained without damaging natural resources.',ex:'"Sustainable agriculture protects long-term soil health."'},
+  {word:'trend',pos:'noun',def:'A general direction in which something is changing or developing.',ex:'"There is a clear upward trend in people working remotely."'},
+  {word:'controversy',pos:'noun',def:'A prolonged public disagreement.',ex:'"The use of genetic engineering in agriculture remains controversial."'},
+  {word:'fundamental',pos:'adjective',def:'Of central importance; forming a necessary base.',ex:'"Access to clean water is a fundamental human right."'},
+  {word:'guarantee',pos:'verb/noun',def:'To make certain that something will happen; a formal promise.',ex:'"Education does not guarantee success, but significantly improves the odds."'},
+  {word:'eliminate',pos:'verb',def:'To completely remove or get rid of something.',ex:'"The new policy aims to eliminate single-use plastics by 2030."'},
 ];
 
-function renderRoadmap() {
-  const container = document.getElementById('roadmapContent');
-  container.innerHTML = ROADMAP_DATA.map(phase => `
-    <div class="roadmap-phase">
-      <div class="phase-header" onclick="togglePhase(${phase.phase})">
-        <div class="phase-num">0${phase.phase}</div>
-        <div>
-          <div class="phase-title">Phase ${phase.phase}: ${phase.title}</div>
-          <div class="phase-weeks">${phase.weeks} — ${phase.goal}</div>
-        </div>
-        <div style="margin-left:auto;color:var(--muted);font-size:0.9rem" id="phaseArrow${phase.phase}">▼</div>
-      </div>
-      <div class="phase-body" id="phaseBody${phase.phase}">
-        ${phase.weeks_data.map(w => `
-          <div class="week-item">
-            <strong>Week ${w.week}: ${w.title}</strong>
-            <div style="margin-top:0.4rem">${w.items.map(i => `<div>• ${i}</div>`).join('')}</div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
+let allCards=[], cardIdx=0, flipped=false, vStatus={};
+
+async function loadVocab(){
+  const custom=await all('customVocab');
+  allCards=[...AWL,...custom.map(c=>({...c,isCustom:true}))];
+  const stats=await all('vocabStatus');
+  vStatus={};
+  stats.forEach(s=>{vStatus[s.word]=s.status;});
+  cardIdx=Math.min(cardIdx,allCards.length-1);
+  showCard(); updateVCounts();
+  renderCV(custom);
 }
 
-function togglePhase(n) {
-  const body = document.getElementById('phaseBody' + n);
-  const arrow = document.getElementById('phaseArrow' + n);
-  body.classList.toggle('open');
-  arrow.textContent = body.classList.contains('open') ? '▲' : '▼';
+function showCard(){
+  flipped=false; document.getElementById('fc').classList.remove('flipped');
+  const c=allCards[cardIdx]; if(!c) return;
+  document.getElementById('cWord').textContent=c.word;
+  document.getElementById('cPos').textContent=c.pos||'word';
+  document.getElementById('cDef').textContent=c.def;
+  document.getElementById('cEx').textContent=c.ex||'';
+  document.getElementById('vctr').textContent=`Card ${cardIdx+1} of ${allCards.length}`;
+  const kb=document.getElementById('kb'), st=vStatus[c.word];
+  if(st){ kb.textContent=st==='known'?'✓ Known':'↺ Learning'; kb.className='kbadge '+(st==='known'?'known':'learning'); kb.style.display='block'; }
+  else { kb.style.display='none'; }
+}
+function flipCard(){flipped=!flipped;document.getElementById('fc').classList.toggle('flipped');}
+function nextCard(){cardIdx=(cardIdx+1)%allCards.length;showCard();}
+function prevCard(){cardIdx=(cardIdx-1+allCards.length)%allCards.length;showCard();}
+
+async function markCard(status){
+  const c=allCards[cardIdx]; if(!c) return;
+  vStatus[c.word]=status;
+  await put('vocabStatus',{word:c.word,status});
+  showCard(); updateVCounts();
+  toast(status==='known'?'Marked as known! ✓':'Marked as still learning.');
+  nextCard();
 }
 
-// ===================== INIT =====================
-store.load();
+async function resetVocab(){
+  if(!confirm('Reset all vocabulary progress?')) return;
+  await clr('vocabStatus'); vStatus={};
+  showCard(); updateVCounts(); toast('Vocabulary progress reset.');
+}
 
-// Set default date inputs
-const todayVal = today();
-['taskDate', 'scoreDate'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.value = todayVal;
-});
+function updateVCounts(){
+  const vals=Object.values(vStatus);
+  document.getElementById('vKnown').textContent=vals.filter(v=>v==='known').length;
+  document.getElementById('vLearning').textContent=vals.filter(v=>v==='learning').length;
+  document.getElementById('vUnseen').textContent=allCards.length-vals.length;
+}
 
-updateDashboard();
-renderTasks('all');
+async function addVocab(){
+  const word=document.getElementById('vWord').value.trim();
+  const pos=document.getElementById('vPos').value.trim()||'word';
+  const def=document.getElementById('vDef').value.trim();
+  const ex=document.getElementById('vEx').value.trim();
+  if(!word||!def){toast('Enter word and definition.','er');return;}
+  await add('customVocab',{word,pos,def,ex,createdAt:Date.now()});
+  ['vWord','vPos','vDef','vEx'].forEach(id=>document.getElementById(id).value='');
+  toast(`"${word}" added to your vocabulary!`);
+  loadVocab();
+}
+
+async function delCV(id){
+  await del('customVocab',id); toast('Word deleted.','er'); loadVocab();
+}
+
+function renderCV(custom){
+  const el=document.getElementById('cvList');
+  if(!custom.length){el.innerHTML='';return;}
+  el.innerHTML='<div style="font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.8rem">Your Custom Words ('+custom.length+')</div>'
+    +custom.map(c=>`<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:1rem;font-size:.88rem"><strong style="color:var(--accent);min-width:90px">${c.word}</strong><span style="color:var(--muted);flex:1">${c.def}</span><button class="tdel" onclick="delCV(${c.id})">✕</button></div>`).join('');
+}
+
+/* ===================================================
+   SPEAKING
+=================================================== */
+const SP={
+  1:[
+    {q:"Do you prefer to spend time alone or with other people? Why?",t:"Give a clear preference. Add a reason and a short example from your life."},
+    {q:"What kind of music do you enjoy listening to?",t:"Don't just name a genre — describe how it makes you feel and when you listen to it."},
+    {q:"Do you think it's important to learn about history? Why or why not?",t:"Give a yes/no answer first, then develop with 1–2 reasons."},
+    {q:"How do you usually spend your weekends?",t:"Use present simple for habits. Include one specific, vivid detail."},
+    {q:"Are there any languages you would like to learn in the future?",t:"Show enthusiasm. Mention a specific reason — travel, culture, career."},
+    {q:"How important is cooking as a skill for young people today?",t:"Give your view clearly. Use 'I think... because...' to structure it."},
+    {q:"Do you enjoy reading? What kinds of books do you like?",t:"Be specific. Name a type or title. Then explain why you enjoy it."},
+    {q:"How has technology changed the way people shop?",t:"Compare past vs present. Use 'used to' for old habits and 'nowadays' for current ones."},
+  ],
+  2:[
+    {q:"Describe a time when you had to solve a difficult problem.\n\nYou should say:\n— What the problem was\n— What made it difficult\n— How you eventually solved it\n— How you felt after solving it",t:"Use your prep time to write: who/what/where/when/how you felt. Use past tense and show emotion."},
+    {q:"Describe a person in your life who has had a positive influence on you.\n\nYou should say:\n— Who this person is\n— How you know them\n— What qualities they have\n— How they have influenced you",t:"Don't just list qualities — show them with specific examples and stories."},
+    {q:"Describe a book or film that you found particularly interesting.\n\nYou should say:\n— What it was about\n— When you read/watched it\n— Why it was interesting\n— Whether you would recommend it",t:"Focus on WHY it affected you. Your personal reaction makes the answer rich."},
+    {q:"Describe a memorable journey or trip you have taken.\n\nYou should say:\n— Where you went\n— Who you went with\n— What happened during the trip\n— Why it was memorable",t:"Use sensory details — what you saw, heard, felt. Make the examiner feel like they were there."},
+    {q:"Describe a skill you have learned that you find useful.\n\nYou should say:\n— What the skill is\n— How you learned it\n— How long it took\n— Why you find it useful",t:"Structure clearly: intro → learning process → current use → why it matters."},
+  ],
+  3:[
+    {q:"Do you think governments should invest more in space exploration, or focus on problems on Earth?",t:"Use the depth ladder: surface answer → reason → example → societal level."},
+    {q:"How has technology changed the way people communicate with each other?",t:"Compare past vs present. Acknowledge both positive and negative changes."},
+    {q:"Some people argue that environmental problems are too serious to be solved by individuals. What do you think?",t:"Acknowledge both sides before giving your nuanced view."},
+    {q:"Is it more important for children to study academic subjects or to develop social skills?",t:"Don't just say 'both are important.' Argue for one and explain why."},
+    {q:"Do you think economic growth always leads to improvements in quality of life?",t:"Give a qualified answer — 'Not necessarily' or 'It depends on...' — then explain with examples."},
+    {q:"How might the way people work change in the next 20 years?",t:"Speculate using future forms: 'I think it's likely that... / We could see a situation where...'"},
+    {q:"To what extent has social media had a negative effect on society?",t:"Acknowledge both sides. Use 'on the one hand / on the other hand' structure."},
+  ]
+};
+
+function getP(part){
+  const ps=SP[part], p=ps[Math.floor(Math.random()*ps.length)];
+  document.getElementById('pPart').textContent='PART '+part+(part===1?' — Personal Questions':part===2?' — Long Turn (2 min)':' — Abstract Discussion');
+  document.getElementById('pText').textContent=p.q;
+  document.getElementById('pTip').innerHTML='<strong>Tip:</strong> '+p.t;
+}
+function getRP(){getP([1,2,3][Math.floor(Math.random()*3)]);}
+
+function initSpeak(){
+  getRP();
+  document.getElementById('spkChk').innerHTML=[
+    "Did I answer every part of the question?",
+    "Did I avoid long pauses (more than 2 seconds)?",
+    "Did I use at least one less common vocabulary word?",
+    "Did I use a variety of sentence structures?",
+    "Was my pronunciation clear and easy to understand?",
+    "Did I show a personal opinion with supporting reasons?",
+    "Did I speak for the full required time?",
+  ].map(i=>`<label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.88rem;padding:.25rem 0"><input type="checkbox" style="accent-color:var(--green);width:16px;height:16px"> ${i}</label>`).join('');
+
+  document.getElementById('phraseGrid').innerHTML=[
+    {title:'Giving opinions',items:["In my view / From my perspective","I'm inclined to think that...","There's a strong case for...","It strikes me that..."]},
+    {title:'Hedging',items:["It's difficult to generalise, but...","To a certain extent...","It depends on the context...","Generally speaking..."]},
+    {title:'Adding points',items:["Furthermore / What's more...","Not only that, but also...","Another aspect worth considering...","Building on that point..."]},
+    {title:'Contrasting',items:["That said / Having said that...","On the other hand...","Nevertheless / Nonetheless...","Despite this, I would argue..."]},
+  ].map(g=>`<div><div class="pgt">${g.title}</div>${g.items.map(i=>`<div class="pi">• ${i}</div>`).join('')}</div>`).join('');
+}
+
+/* ===================================================
+   ROADMAP
+=================================================== */
+const RM=[
+  {phase:1,title:'Foundation',weeks:'Weeks 1–4',goal:'Establish your baseline, fix big weaknesses, build strong study habits.',data:[
+    {week:1,title:'Baseline & Orientation',items:['Take full diagnostic mock test','Review every wrong answer in detail','Study all 4 section formats','Begin daily vocabulary habit (10 words/day)']},
+    {week:2,title:'Skill Builders Begin',items:['Predict answers before listening (pre-read questions)','Learn skimming vs scanning for Reading','Write first full Task 2 essay (40 min timed)','Record first Speaking session, listen back critically']},
+    {week:3,title:'Accuracy & Error Analysis',items:['Focus on spelling in Listening','Master True/False/Not Given — zero inference rule','Self-assess Writing using official band descriptors','Build topic vocabulary word maps: Environment, Technology']},
+    {week:4,title:'Phase 1 Mock Test',items:['Full mock test — all 4 sections, timed, exam conditions','Compare scores to Week 1 diagnostic','Log all errors in Error Log','Plan Phase 2 based on two weakest areas']},
+  ]},
+  {phase:2,title:'Skill Sharpening',weeks:'Weeks 5–8',goal:'Push from Band 7 territory toward Band 7.5–8.0.',data:[
+    {week:5,title:'Advanced Listening & Reading',items:['Practice Sections 3–4 exclusively (hardest)','Shadow listening technique daily','Speed reading — reduce time by 2 minutes per passage','Continue AWL vocabulary — aim for 200 words known']},
+    {week:6,title:'Advanced Writing',items:['Write 4 Task 2 essays — one per day','Replace all basic vocabulary with advanced alternatives','Practice map and process Task 1 (most neglected)','Use natural discourse markers, not forced ones']},
+    {week:7,title:'Advanced Speaking',items:['Storytelling method for Part 2 — vivid, detailed, emotional','Depth ladder for Part 3: surface → reason → example → societal','Idiomatic expressions: 1–2 per test, used naturally','15 min daily out-loud question practice']},
+    {week:8,title:'Phase 2 Mock & Sprint',items:['Full mock test, stricter conditions','Compare Writing to Band 8 model essay','Compare Speaking recording to Band 8 YouTube sample','Intensive work on identified weakest area']},
+  ]},
+  {phase:3,title:'Exam Simulation',weeks:'Weeks 9–12',goal:'Simulate exam conditions until it feels completely normal.',data:[
+    {week:9,title:'Stamina & Timing',items:['3x full 3-hour mocks (L + R + W back-to-back)','Build concentration endurance — no breaks between sections','Simulate exam-day: quiet room, pencil only, no phone','Full Speaking mock recordings — compare to previous sessions']},
+    {week:10,title:'Vocabulary & Grammar Sprint',items:['Final topic vocabulary sweep: Society, Economy, Health, Culture','Grammar: conditionals, passive voice, relative clauses','Target: zero grammar errors in Writing','New vocabulary in Speaking — natural, not forced']},
+    {week:11,title:'Pressure Testing',items:['Finish Reading in 55 minutes (5 min buffer)','Finish Writing with 2 min to proofread','Give slightly longer Speaking answers than needed','Mindset: visualise the exam going well — this works']},
+    {week:12,title:'Final Polish',items:['Light review only — no new material (Mon–Wed)','Revisit biggest mistakes from 11 weeks','Thursday: complete rest day, no studying','Exam logistics: ID, arrival time, what to bring — check all']},
+  ]},
+];
+
+async function loadRoadmap(){
+  const precs=await all('roadmapProgress');
+  const pmap={}; precs.forEach(r=>pmap[r.key]=r.done);
+  document.getElementById('rmContent').innerHTML=RM.map(phase=>`
+    <div class="rphase">
+      <div class="rphdr" onclick="togglePhase(${phase.phase})">
+        <div class="rnum">0${phase.phase}</div>
+        <div style="flex:1"><div class="rtitle">Phase ${phase.phase}: ${phase.title}</div><div class="rmeta">${phase.weeks} — ${phase.goal}</div></div>
+        <div style="color:var(--muted);font-size:.9rem" id="ra${phase.phase}">▼</div>
+      </div>
+      <div class="rbody" id="rb${phase.phase}">
+        ${phase.data.map(w=>{
+          const key='week_'+w.week, done=!!pmap[key];
+          return `<div class="witem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+              <strong>Week ${w.week}: ${w.title}</strong>
+              <button class="wbtn ${done?'d':'u'}" onclick="toggleWeek(${w.week})">${done?'✓ Done':'Mark Done'}</button>
+            </div>
+            <div>${w.items.map(i=>`<div style="margin-bottom:.2rem">• ${i}</div>`).join('')}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function togglePhase(n){
+  const b=document.getElementById('rb'+n), a=document.getElementById('ra'+n);
+  b.classList.toggle('open'); a.textContent=b.classList.contains('open')?'▲':'▼';
+}
+
+async function toggleWeek(week){
+  const key='week_'+week;
+  const ex=await get('roadmapProgress',key);
+  const done=ex?!ex.done:true;
+  await put('roadmapProgress',{key,done});
+  toast(done?`Week ${week} marked complete! ✓`:`Week ${week} unmarked.`);
+  loadRoadmap();
+}
+
+/* ===================================================
+   SETTINGS
+=================================================== */
+async function loadSettings(){
+  const [nm,ed]=await Promise.all([get('settings','userName'),get('settings','examDate')]);
+  if(nm) document.getElementById('setName').value=nm.value;
+  if(ed) document.getElementById('setExam').value=ed.value;
+
+  const [ts,sc,er,cv]=await Promise.all([all('tasks'),all('scores'),all('errors'),all('customVocab')]);
+  document.getElementById('dbInfo').innerHTML=`
+    <div>Engine: <strong style="color:var(--green)">IndexedDB</strong></div>
+    <div>Database: <strong>IELTSBand8DB v1</strong></div>
+    <div>Tasks: <strong>${ts.length}</strong> records</div>
+    <div>Mock tests: <strong>${sc.length}</strong> records</div>
+    <div>Errors logged: <strong>${er.length}</strong> records</div>
+    <div>Custom vocabulary: <strong>${cv.length}</strong> words</div>
+    <div>Persistence: <strong style="color:var(--green)">● Cross-session (permanent)</strong></div>
+  `;
+
+  if(ed&&ed.value){
+    const diff=Math.ceil((new Date(ed.value)-new Date())/(1000*60*60*24));
+    document.getElementById('countdown').textContent=diff>0?`📅 ${diff} days until your exam!`:diff===0?'🎯 Exam day is today! Good luck!':'✅ Exam date has passed.';
+  }
+}
+
+async function saveSettings(){
+  const name=document.getElementById('setName').value.trim();
+  const exam=document.getElementById('setExam').value;
+  if(name) await put('settings',{key:'userName',value:name});
+  if(exam) await put('settings',{key:'examDate',value:exam});
+  toast('Settings saved!');
+  loadSettings();
+}
+
+async function exportAll(){
+  const [ts,sc,er,cv,vs,rp,st]=await Promise.all([all('tasks'),all('scores'),all('errors'),all('customVocab'),all('vocabStatus'),all('roadmapProgress'),all('settings')]);
+  const data={exportedAt:new Date().toISOString(),version:1,tasks:ts,scores:sc,errors:er,customVocab:cv,vocabStatus:vs,roadmapProgress:rp,settings:st};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download='ielts_backup_'+td()+'.json'; a.click();
+  toast('Data exported successfully!');
+}
+
+async function importAll(e){
+  const f=e.target.files[0]; if(!f) return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!confirm('This will REPLACE all current data with the backup. Continue?')) return;
+      const importStore=async(name,items)=>{if(!items||!items.length)return;await clr(name);for(const item of items)await add(name,item);};
+      await importStore('tasks',data.tasks);
+      await importStore('scores',data.scores);
+      await importStore('errors',data.errors);
+      await importStore('customVocab',data.customVocab);
+      if(data.vocabStatus) for(const s of data.vocabStatus) await put('vocabStatus',s);
+      if(data.roadmapProgress) for(const r of data.roadmapProgress) await put('roadmapProgress',r);
+      if(data.settings) for(const s of data.settings) await put('settings',s);
+      toast('Data imported successfully!');
+      loadSettings();
+    }catch(err){toast('Import failed — invalid file.','er');}
+  };
+  reader.readAsText(f);
+}
+
+async function clrStore(name){
+  if(!confirm(`Clear all ${name}? This cannot be undone.`)) return;
+  await clr(name); toast(`All ${name} cleared.`,'er'); loadSettings();
+}
+
+async function clrAll(){
+  if(!confirm('Reset ALL data? This deletes everything.')) return;
+  if(!confirm('Absolutely sure? Export first if needed.')) return;
+  await Promise.all(['tasks','scores','errors','customVocab','vocabStatus','roadmapProgress','settings'].map(clr));
+  toast('All data reset.','er'); loadSettings(); loadDash();
+}
+
+/* ===================================================
+   BOOT — Open IndexedDB, then initialize
+=================================================== */
+(async()=>{
+  const pill=document.getElementById('dbPill');
+  try{
+    await openDB();
+    pill.textContent='● DB Ready'; pill.className='db-pill ok';
+    document.getElementById('loadingOverlay').style.display='none';
+    document.getElementById('tDate').value=td();
+    document.getElementById('scDate').value=td();
+    document.getElementById('hDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    await loadDash();
+  }catch(err){
+    pill.textContent='● DB Error'; pill.className='db-pill err';
+    document.getElementById('loadingOverlay').innerHTML=`<div style="color:var(--red);font-size:1rem;text-align:center;padding:2rem;max-width:400px">Database failed to initialize.<br><small style="color:var(--muted)">${err.message}</small><br><br><small style="color:var(--muted)">Open in a regular browser window (not incognito mode).</small></div>`;
+    console.error('IndexedDB init failed:',err);
+  }
+})();
 </script>
 </body>
 </html>
